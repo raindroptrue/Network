@@ -1,0 +1,535 @@
+General Config Router/Switch
+	#dir
+	#write erase
+	#delate flash:vlan.dat
+	#erase startup-config
+	#reload
+	(config)service timestamps ?
+	#show logging
+	(config)banner [login|motd|exec] $
+
+
+	#ping dest_ip [source from_ip]
+	#traceroute dest_ip
+	
+	#terminal lenght X
+	(config)hostname _name
+	(config)no ip domain-lookup
+	(config)line con 0
+		exec-timeout 0 0 
+		logging synchronous
+
+	#show running-config [int_name]
+	      interfaces stats|status6
+	      interfaces [switchport|trunk|vlan X]
+	      vlan [brief]
+	      ip interface brief
+	      ip arp
+	      users
+
+
+	      cdp entry _name
+	      cdp neighbors [detail]
+	(config)no cdp run
+	(config-if)no cdp enablhow 
+
+	(config)lldp run
+	#show lldp neighbor
+
+	#clear mac address-table dynamic
+	#show mac address-table [aging-time / count]
+	                        dynamic [int_name/ vlan X]
+	                        [secure|sttic]
+	#show interfaces vlan 1
+	#show ssh // show ip ssh
+
+
+
+Interfaces configuration
+
+	(config-if)duplex [auto|full|half]
+	           speed [auto|10|100|1000]
+	           description _name
+
+Router
+	#show controller ?
+	(config-if)bandwidth rate-in-kbps
+		   clock rate rate-in-bps
+
+--------SECURITY-----------
+
+Security - Passwords
+
+	(config)service password-encryption
+	(config)enable secret _pwd
+	(config)enable password _pwd
+	(config)user _name password _pwd
+	(config)line [con 0|vty 0 15]
+		privilege level [0-15]
+		login [local]
+		password _pwd
+
+Security - Switchport
+
+
+	#show port-security [ |int_name|address]
+	#show errdisable recovery
+	(config-if)switchport mode [access|trunk]
+		switchport port-security
+		switchport port-security mac-address/
+			   	    /[mac_ad|sticky]
+		switchport port-security maximum X
+		switchport port-security violation/
+	              /[protect|restrict|shutdown]
+
+
+SSH / config
+
+	#show ip ssh
+	#show ssh
+	(config)hostname _name
+	(config)ip domain-name _name
+		crypto key generate rsa modulus XXX
+		crypto key zeroize rsa
+	(config)ip ssh version 2
+	(config)username _name secret _pwd
+	(config)line vty 0 15
+		login local
+		transport input [ssh|telnet|all]
+	
+-----------------------------------------
+	(config)interface vlan X
+		ip address my_ip my_mask
+		no shutdown
+	(config)interface vlan X 
+		ip address dhcp
+		no shutdown
+	(config)ip default-gateway dest_ip
+	
+
+--------VLAN-----------------
+
+	#show switchport
+	(config)interfaces int_name
+		switchport mode [access|trunk]
+		switchport access vlan <1-4094>
+	(config)vlan <1-4094>
+	(config)vlan XX
+		name _name
+
+Trunk
+
+	#show dtp interface int_name
+	#show interface int_name switchport
+	#show interface trunk
+	(config-if)switchport mode trunk desirable?
+	(config-if)switchport trunk encapsulation/
+		  	   /[dot1q|isl|negotiate]
+	(config-if)switchport trunk native vlan X
+	(config-if)switchport nonegotiate
+
+VTP
+
+	#show vtp [status|password]
+	(config)vtp mode [server|client|transparent|off]
+		vtp domain _name
+		vtp password _pwd
+		vtp pruning
+		vtp version [1|2]
+
+ROAS
+	(config)interface int_name.vlan_id
+		encapsulation [dot1q|isl] vlan_id [native]
+		ip address my_ip my_mask
+
+
+--------STP-------------
+
+	#show spanning-tree [root|summary]
+	#show spanning-tree [vlan X|int_name|state|detail]
+	#show spanning-tree vlan X [root|bridge]
+
+	(config)spanning-tree vlan X root [primary/
+					  |secondary]
+	(config)spanning-tree vlan X priority X
+	(config)spanning-tree vlan X port-priority X
+	(config)spanning-tree pathcost method long
+
+	(config-if)spanning-tree vlan X cost X
+	(config-if)spanning-tree link-type point-to-point
+	(config-if)spanning-tree portfast [disable]
+	(config-if)spanning-tree portfast
+	(config)spanning-tree portfast default
+		
+	(config)spanning-tree portfast edge bpduguard
+	(config-if)spanning-tree bpduguard [enable|disable]
+
+RSTP
+	(config)spanning-tree mode [rapid-pvst|pvst|mst]
+
+
+--------EtherChannel---------
+
+	#show interface port-channel X
+	#show etherchannel X [summary|port-channel|brief|/
+					    /detail|port]
+	(config-if)channel-group X mode on
+	(config-if)channel-group X mode [active|desirable]/
+				           /[auto|passive]
+	
+-------L3Switch---------
+
+Vlan
+	(config)interface vlan X
+		ip address my_ip my_mask
+		no shutdown	
+	(config)int_name
+		no switchport
+		ip addres my_ip my_mask
+
+	(config)ip routing
+	-
+	-
+	-
+
+---------------------------------
+	
+DHCP
+
+	#show ip dhcp [binding|pool _name|server statics/
+		      /|conflict]
+	#clear ip dhcp conflict
+
+	(config)ip dhcp pool _name	
+		network net_ip/x
+		default-router dg_ip
+		dns-server dns_ip
+		ip dhcp excluded-address from_ip to_ip
+		lease X
+	(config-if)ip address dhcp
+
+	(config-if)ip dhcp client client_id ascii _name?
+	(config-if)ip helper-address dhcp_ip
+
+	#show dhcp [server|lease]
+------------------------------------------------------
+
+		domain-name zzzz
+		next-server zzz.zzz.zzz.zzz
+	
+--------ROUTING---------------
+	
+	(config)no ip route
+	(config)ip default-gateway gw_ip
+	
+	#show ip bgp/? neighbor 
+
+	#show ip cef
+	#show ip route [ |connected|zzz.zzz.zzz.zzz]
+	#show ip protocols
+	#show ip interface brief
+6	#show controllers
+	#clear ip route *
+	
+	(config)ip route 0.0.0.0 0.0.0.0 [int|dest_ip]
+
+Static v6
+
+	(config)ipv6 unicast-routing
+	(config-if)ipv6 address ipv6_ad/64
+	(config-if)ipv6 address ipv6_nat/64 eui-64
+
+RIPv2
+
+	#show ip rip database
+	(config)ip route dest_net dest_mask via_ip [X]
+	(config)router rip
+		version 2
+		[no]auto-summary
+		network net_ip
+		passive-interface [X/default]
+		maximum-path X
+
+   		default-information originate
+
+	(config-if)[no]ip split-horiozn
+
+OSPF
+
+	#clear ip ospf process [y]
+
+	#show ip route ospf
+	#show ip ospf [database|neighbour|interface/
+					   int_name]
+
+	(config)ip ospf hello X
+	(config)router ospf X
+		router-id ip_format
+		network my_net wild_mask area X
+		neighbor from_ip
+
+		area X virtual-link router_id
+		area X stub no-summary
+		redistribute connected subnets
+		passive-interface int_name [default]
+	
+		auto-cost reference-bandwidth X
+		maximum-paths X
+
+	(config-if)ip ospf [priority X|cost X|bandwidth X]
+
+OSPFv3
+
+	#show ipv6 ospf [interface[brief]|neighbor]
+	#show ipv6 protocols
+	
+	(config)ipv6 unicast-routing
+	(config-if)ipv6 enable
+	(config-if)ipv6 address my_ipv6
+	(config-if)ipv6 ospf X area X 
+		router-id ipv4_format
+
+EIGRP
+	
+	#show ip eigrp [neighbors|top|interface [detail]]
+	#show ip route eigrp
+	#show ip protocol
+	
+	(config)router eigrp X
+		[eigrp] router-id ip_format
+		network net_ip [wild_mask]
+		variance X
+		metric weights 0 1 0 1 0 0 
+
+		[no]auto-summary
+		passive-interface [int_name|default]
+	
+	(config-if)no ip split-horizon eigrp X
+	(config-if)[delay|bandwidth] X
+	(config-if)ip [hello-interval|hold-time] eigrp X X
+
+	(config-if)ip summary-address egrip X net_ip/
+				           /net_mask
+
+EIGRPv6
+
+	#show ipv6 eigrp [protocols|route|interface int_name]
+	
+	
+	(config)ipv6 unicast-routing
+	(config)ipv6 router eigrp X
+		eigrp router-id ipv4_format
+	(config-if)ipv6 eigrp X
+
+BGP
+
+	#show ip bgp summary
+	#show ip bgp neighbor [ip]
+	(config)router bgp X
+		neighbor neighbor_ip remote-as X
+		neighbor neighbor_ip update-source/
+				      /[loopback 0]
+		network net_ip mask net_mask
+		
+--------FHRP-----------------
+
+HSRP
+
+	#show standby [brief]
+	(config-if)standby X ip v_ip
+	(config-if)standby X priority X
+	(config-if)standby X preempt [delay]
+	(config-if)standby X timers X X
+	(config-if)standby version <1-2>
+
+VRRP
+
+	#show vrrp [brief]
+	(config-if)vrrp X ip v_ip
+
+--------ACL------------------
+
+ACL - Std
+	#show access-list
+	#show ip access-list
+
+	(config)access-list X [p|d] from_net wild_mask
+	(config)access-list X [p|d] host from_ip
+	(config)no access-list X
+
+	(config)ip access-list standard _name
+		[d|p]from_ip wild_mask
+
+	(config-if)ip access-group X [in|out]
+	(config-if)no ip access-group X [in|out]
+
+ACL - Ext
+
+	(config)access-list eX [p|d] prot_name from_net/
+	/wild_mask dest_net wild_mask [eq|gt|lt] prot_name
+	(config)ip access-list extended _name
+		[X][d|p] prot_name from_net wild_mask/
+				  /dest_net wild_mask
+	(config)access-list extended X
+		no X
+		
+ACLv6
+
+	#show ipv6 access-list
+	(config)ipv6 access-list _name
+		[d|p] from_ipv6 dest_ipv6
+		[sequence X][d|p] prot_name host from_ip/
+		/host dest_ip [eq][port]
+	(config-if)ipv6 traffic-filter _name [in|out]
+
+--------NTP-------------------
+
+	#show clock
+	#show ntp associations
+	#show ntp status
+	#clock set hh:mm:ss dd _mounth yr
+	(config)ntp master [1-15]
+	(condif)ntp source [ip|loopback]
+	(config)ntp server server_ip [prefer] server2_ip
+	(config)ntp peer from_ip
+	(config-if)ntp broadcast [client]
+
+--------Nat&&Pat-------------
+
+	#show ip nat translation
+	#show ip nat stat
+	#clear ip nat translation *
+
+	(config-if)ip nat [inside|outside]
+
+NAT - Static
+
+	(config)ip nat inside source static int_ip glop_ip
+
+NAT - Dynamic
+
+	(config)access-list X permint net_ip wild_mask
+	(config)ip nat pool _name start_ip end_ip/
+		                /netmask net_mask
+	(config)ip nat inside source list acl_list/
+			           /pool pool_name
+PAT
+	(config)ip nat inside source list acl_list/
+		   /interface int_out_name overload
+
+--------IPv6---------
+
+	#show ipv6 interface [brief]
+	#show ipv6 route
+	(config)ipv6 unicast-routing
+	(config-if)ipv6 address netv6/64
+	(config-if)ipv6 address netv6/64 eui-64
+	
+	(config)ipv6 route dest_netv6/64 [next_ipv6|int] 
+	(config)ipv6 route dest_ipv6/128 [next_ipv6|int] 
+	(config)ipv6 route ::/0 [next_ipv6|int]
+
+--------PPP---------
+
+	#show controller int_serial
+	(config-if)clock rate 
+		
+PAP
+
+	(config-if)encapsulation ppp
+	(config-if)ppp authentication pap
+	(config-if)ppp pap sent-username _name password _pwd
+
+CHAP
+	(config-if)encapsulation ppp
+	(config-if)ppp authentication chap
+
+Multilink
+
+	(config-if)no ip address
+	(config-if)encapsulation ppp
+	(config-if)ppp multilink
+	(config-if)ppp multilink group X
+
+	(config)interface multilink X
+		ip address link_ip link_mask
+		encapsulation ppp
+		ppp multilink
+		ppp multilink group 1 
+
+GRE
+
+	(config)interface tunnel X
+	(config-if)ip address gre_ip gre_mask
+	(config-if)tunnel source [my_ip|int_name] 
+	(config-if)tunnel destiation [dest_ip|int_name]
+
+	(config-if)tunnel mode gre ipv6
+
+
+PPPoE
+	(config-if)no ip address
+		pppoe enable group global
+		pppoe-client dial-pool-number X
+
+	interface DialerX
+		mtu 1492
+		ip address negotiated
+		encapsulation ppp
+		dialer pool X
+		ppp chap hostname X
+		ppp chap password 0 zzzz
+		-
+		-
+		-
+		-
+--------AAA----------------
+
+	(config)aaa new model
+	(config)aaa authentication login default group/
+	/[radius|tacas+] local none
+	(config)aaa autorization ?
+		
+
+Tacas+
+	(config)tacas server _name
+		key [X] _pwd
+		address [ipv4|ipv6] my_ip  
+			
+Radius
+
+
+	(config)radius server _name
+		key _pwd
+		address my_ip
+
+--------SPAN----------------
+	
+	#show monitor
+	(config)monitor session X source vlan X both
+	(config)monitor sessions X destination/
+			    /interface int_name
+
+
+
+
+
+
+
+
+
+
+	
+
+
+<end>
+
+
+
+
+
+
+
+
+
+-----------
