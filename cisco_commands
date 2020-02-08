@@ -6,7 +6,12 @@ General Config Router/Switch
 	#reload
 	(config)service timestamps ?
 	#show logging
+	#show file system|version|flash
 	(config)banner [login|motd|exec] $
+
+	#show history [size X]
+	#terminal history size X
+	(config)history size X
 
 
 	#ping dest_ip [source from_ip]
@@ -16,25 +21,26 @@ General Config Router/Switch
 	(config)hostname _name
 	(config)no ip domain-lookup
 	(config)line con 0
-		exec-timeout 0 0 
+		exec-timeout _hh _min
 		logging synchronous
 
 	#show running-config [int_name]
-	      interfaces stats|status6
+	      protocols ?
+	      interfaces [ _ |stats|status]
 	      interfaces [switchport|trunk|vlan X]
 	      vlan [brief]
 	      ip interface brief
-	      ip arp
+	      [ip] arp
+	      clear ip arp
 	      users
-
 
 	      cdp entry _name
 	      cdp neighbors [detail]
-	(config)no cdp run
-	(config-if)no cdp enablhow 
+	(config)[no] cdp run
+	(config-if)no cdp enable
 
-	(config)lldp run
 	#show lldp neighbor
+	(config)[no] lldp run
 
 	#clear mac address-table dynamic
 	#show mac address-table [aging-time / count]
@@ -43,7 +49,10 @@ General Config Router/Switch
 	#show interfaces vlan 1
 	#show ssh // show ip ssh
 
-
+	#show logging
+	#[no]logging monitor|console
+	#terminal monitor
+	#logging host|trap|buffered|
 
 Interfaces configuration
 
@@ -72,7 +81,7 @@ Security - Passwords
 Security - Switchport
 
 
-	#show port-security [ |int_name|address]
+	#show port-security [ _ |int_name|address]
 	#show errdisable recovery
 	(config-if)switchport mode [access|trunk]
 		switchport port-security
@@ -113,6 +122,7 @@ SSH / config
 	(config)interfaces int_name
 		switchport mode [access|trunk]
 		switchport access vlan <1-4094>
+		switchport voice vlan X
 	(config)vlan <1-4094>
 	(config)vlan XX
 		name _name
@@ -121,12 +131,15 @@ Trunk
 
 	#show dtp interface int_name
 	#show interface int_name switchport
-	#show interface trunk
+	#show interface [int_name] trunk
 	(config-if)switchport mode trunk desirable?
 	(config-if)switchport trunk encapsulation/
 		  	   /[dot1q|isl|negotiate]
 	(config-if)switchport trunk native vlan X
 	(config-if)switchport nonegotiate
+
+		   switchport trunk allowed vlan [add|all/
+			        /except|remove] vlan_list
 
 VTP
 
@@ -152,17 +165,18 @@ ROAS
 	(config)spanning-tree vlan X root [primary/
 					  |secondary]
 	(config)spanning-tree vlan X priority X
-	(config)spanning-tree vlan X port-priority X
+	(config-if)spanning-tree vlan X port-priority X
 	(config)spanning-tree pathcost method long
 
 	(config-if)spanning-tree vlan X cost X
 	(config-if)spanning-tree link-type point-to-point
+
 	(config-if)spanning-tree portfast [disable]
-	(config-if)spanning-tree portfast
 	(config)spanning-tree portfast default
 		
-	(config)spanning-tree portfast edge bpduguard
 	(config-if)spanning-tree bpduguard [enable|disable]
+	(config)[no]spanning-tree portfast bpduguard default
+	(config)spanning-tree portfast edge bpduguard
 
 RSTP
 	(config)spanning-tree mode [rapid-pvst|pvst|mst]
@@ -174,7 +188,7 @@ RSTP
 	#show etherchannel X [summary|port-channel|brief|/
 					    /detail|port]
 	(config-if)channel-group X mode on
-	(config-if)channel-group X mode [active|desirable]/
+		   channel-group X mode [active|desirable]/
 				           /[auto|passive]
 	
 -------L3Switch---------
@@ -188,16 +202,14 @@ Vlan
 		ip addres my_ip my_mask
 
 	(config)ip routing
-	-
-	-
-	-
-
+	
 ---------------------------------
 	
 DHCP
 
-	#show ip dhcp [binding|pool _name|server statics/
+	#show ip dhcp [binding|pool _name|server statistics/
 		      /|conflict]
+	#show dhcp [server|lease]
 	#clear ip dhcp conflict
 
 	(config)ip dhcp pool _name	
@@ -205,13 +217,12 @@ DHCP
 		default-router dg_ip
 		dns-server dns_ip
 		ip dhcp excluded-address from_ip to_ip
-		lease X
+		lease X X X [infinite]
 	(config-if)ip address dhcp
 
 	(config-if)ip dhcp client client_id ascii _name?
 	(config-if)ip helper-address dhcp_ip
 
-	#show dhcp [server|lease]
 ------------------------------------------------------
 
 		domain-name zzzz
@@ -225,29 +236,39 @@ DHCP
 	#show ip bgp/? neighbor 
 
 	#show ip cef
-	#show ip route [ |connected|zzz.zzz.zzz.zzz]
+	#show ip route [ |connected|_ip|static]
 	#show ip protocols
 	#show ip interface brief
-6	#show controllers
+	#show controllers
 	#clear ip route *
 	
 	(config)ip route 0.0.0.0 0.0.0.0 [int|dest_ip]
 
 Static v6
 
+	#show ipv6 interface [brief]
+	#show ipv6 route [connected|static|local]
+	#show ipv6 neighbors
+	#show ipv6 routers
+
+	(config-if)ipv6 address autoconfig [default]
+
 	(config)ipv6 unicast-routing
 	(config-if)ipv6 address ipv6_ad/64
 	(config-if)ipv6 address ipv6_nat/64 eui-64
 
+	(config-if)ipv6 dhcp relay destination _ip
+
 RIPv2
 
+	#show ip route [rip]
 	#show ip rip database
 	(config)ip route dest_net dest_mask via_ip [X]
 	(config)router rip
 		version 2
 		[no]auto-summary
 		network net_ip
-		passive-interface [X/default]
+		passive-interface [int_name/default]
 		maximum-path X
 
    		default-information originate
@@ -260,7 +281,7 @@ OSPF
 
 	#show ip route ospf
 	#show ip ospf [database|neighbour|interface/
-					   int_name]
+				   [brief|int_name]]
 
 	(config)ip ospf hello X
 	(config)router ospf X
@@ -282,7 +303,10 @@ OSPFv3
 
 	#show ipv6 ospf [interface[brief]|neighbor]
 	#show ipv6 protocols
-	
+	#show ipv6 route [ospf]
+
+	(config)ipv6 router ospf X	
+
 	(config)ipv6 unicast-routing
 	(config-if)ipv6 enable
 	(config-if)ipv6 address my_ipv6
@@ -313,9 +337,10 @@ EIGRP
 
 EIGRPv6
 
-	#show ipv6 eigrp [protocols|route|interface int_name]
-	
-	
+	#show ipv6 eigrp [route|interfaces[detail]/
+					/|int_name]
+	#show ipv6 eigrp topology
+		
 	(config)ipv6 unicast-routing
 	(config)ipv6 router eigrp X
 		eigrp router-id ipv4_format
@@ -323,6 +348,7 @@ EIGRPv6
 
 BGP
 
+	#show tcp brief
 	#show ip bgp summary
 	#show ip bgp neighbor [ip]
 	(config)router bgp X
@@ -350,25 +376,27 @@ VRRP
 --------ACL------------------
 
 ACL - Std
-	#show access-list
-	#show ip access-list
+
+	#show access-list [X|_name]
+	#show ip access-list [X|_name]
+	#sh  int | sh ru
 
 	(config)access-list X [p|d] from_net wild_mask
 	(config)access-list X [p|d] host from_ip
 	(config)no access-list X
+	(config)access-list X remark _txt
 
 	(config)ip access-list standard _name
-		[d|p]from_ip wild_mask
+		[p|d]from_ip wild_mask
 
-	(config-if)ip access-group X [in|out]
-	(config-if)no ip access-group X [in|out]
+	(config-if)[no]ip access-group X [in|out]
 
 ACL - Ext
 
 	(config)access-list eX [p|d] prot_name from_net/
 	/wild_mask dest_net wild_mask [eq|gt|lt] prot_name
 	(config)ip access-list extended _name
-		[X][d|p] prot_name from_net wild_mask/
+		[X][p|d] prot_name from_net wild_mask/
 				  /dest_net wild_mask
 	(config)access-list extended X
 		no X
@@ -377,8 +405,8 @@ ACLv6
 
 	#show ipv6 access-list
 	(config)ipv6 access-list _name
-		[d|p] from_ipv6 dest_ipv6
-		[sequence X][d|p] prot_name host from_ip/
+		[p|d] from_ipv6 dest_ipv6
+		[sequence X][p|d] prot_name host from_ip/
 		/host dest_ip [eq][port]
 	(config-if)ipv6 traffic-filter _name [in|out]
 
@@ -387,7 +415,7 @@ ACLv6
 	#show clock
 	#show ntp associations
 	#show ntp status
-	#clock set hh:mm:ss dd _mounth yr
+	#clock set hh:mm:ss dd month yr
 	(config)ntp master [1-15]
 	(condif)ntp source [ip|loopback]
 	(config)ntp server server_ip [prefer] server2_ip
@@ -468,6 +496,9 @@ GRE
 
 
 PPPoE
+
+	#shoe pppoe sesion
+	#show ip interface [brief] dialer X
 	(config-if)no ip address
 		pppoe enable group global
 		pppoe-client dial-pool-number X
@@ -509,8 +540,6 @@ Radius
 	(config)monitor session X source vlan X both
 	(config)monitor sessions X destination/
 			    /interface int_name
-
-
 
 
 
