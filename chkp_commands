@@ -1,0 +1,49 @@
+show commands X
+show configuration [rba
+
+show rba role X
+add rba role X
+add rba user X roles X
+
+show interfaces [all]
+show uptime
+show version all
+show version os/build/edition/kernel
+show version product
+show arp
+
+show sysenv all|bios|fans|ps|temp|volt
+show asset all|
+
+set/show hostname
+set/show domainname
+set/show ntp
+show management interface
+
+show bonding [groups]
+
+save config
+
+show commands [feature|op]
+history
+!!
+!n
+
+show [config-lock|config-state]
+
+lock database override | unlock database
+
+show extended commands
+show/add/delete command <command>
+
+cat /var/log/ftw_install.log
+halt
+cat /proc/net/bonding/bond1
+
+vphsptob state
+vsx stat -v
+vsenv <vsid>
+ip ro get
+
+
+
