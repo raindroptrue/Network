@@ -1,3 +1,70 @@
+----------1st time wizzard--------
+	
+	(ex)config_system -f
+	(ex)config_system -t _fname
+	(ex)config_system -config-file _fname --dry-run
+
+---------Bonding----------------
+	
+	show bonding group _bondID
+
+	add bonding group _bondID
+	add bonding group _bondID interface _intName
+	set bonding group _bondID
+
+	cat /proc/net/bonding/_bondID
+
+	(ex)fw ctl set int fwha_bond_enhanced_enable 1
+
+----------Bridge----------------
+
+	show bridging group _bridgeID
+	show bridging groups
+
+	add bridging group _bridgeID
+	add bridging group _brisgeID interface _intName
+	set interface _bridgeID ipv4-address _ipv4
+
+----------Management Int--------
+
+	show management interface
+	
+	set management interface _intname
+
+----------Loop back-------------
+
+	show interface _intName
+	
+	add interface lo loopback _ipv4
+	set interface _intName ipv4-address <options>
+
+----------ARP-------------------
+
+	show arp <options>
+
+	add arp static ipv4-address _ipv4 macaddress _mac
+	set arp table <options>
+
+
+----------VTI-------------------
+	
+	show vpn tunnel _vtiName
+	show vpn tunnels
+
+	add vpn tunnel _tunelID <options>
+
+
+--------------------------------
+
+
+	
+
+cpstop
+cpstart
+
+
+
+
 show commands X
 show configuration [rba
 
@@ -44,6 +111,5 @@ vphsptob state
 vsx stat -v
 vsenv <vsid>
 ip ro get
-
 
 
