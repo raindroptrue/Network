@@ -45,6 +45,29 @@
 	add arp static ipv4-address _ipv4 macaddress _mac
 	set arp table <options>
 
+----------DHCP------------------
+
+	show dhcp server <options>
+
+	add dhcp server subnet _ipv4 netmask _mask
+	set dhcp server subnet _ipv4 <options>
+	set dhcp server [enable|disable]
+
+----------Static Routing--------
+
+	show route static all
+	show ipv6 route static all
+
+	set static-route <options>
+	set ipv6 static-route <options>
+
+----------NetFlow---------------
+
+	show netflow collector
+	show netflow all
+	
+	add netflow collerctor ip _ipv4 port _port
+	set netflow collector for-ip _ip
 
 ----------VTI-------------------
 	
@@ -53,12 +76,159 @@
 
 	add vpn tunnel _tunelID <options>
 
+----------NTP and Time----------
 
---------------------------------
+	show [clock|time|timezone]
+	show ntp <options>
+		
+	set [time|date|timezone]
+	set ntp <options>
 
+----------Cloning Group---------
 
+	show cloning-group <options>
+
+	set cloning-group <options>
+	re-synch cloning group
+	set cloning-group-management [on|off]
+
+----------SNMP------------------
+
+	set snmp <options>
+	add snmp <options>
+
+----------Cron------------------
+
+	show cron 
+
+	set cron job <options>
+	add cron job <options>
+
+----------Host and DNS----------
+
+	show host names
+	show hostname
+	show domainname
+
+	set hostname _name
+	set domainname _domian
+
+	show dns <options>
 	
+	set dns <options>
 
+----------Main Notification-----
+
+	show mail-notification [server|username]
+
+	set mail-notification <options>
+
+----------Messages--------------
+
+	show message all
+
+	set message [banner|motd]
+
+----------Session---------------
+
+	show inactivity-timeout
+
+	set inactivity-timeout
+
+----------Core Dump-------------
+
+	show core-dump [total|per_process]
+
+	set core-dump <options>
+
+----------IPv6 Support----------
+
+	show ipv6-state
+
+	set ipv6-state
+
+----------Syslog----------------
+
+	show syslog <options>
+
+	add syslog <options>
+	set syslog <options>
+
+----------Network Access--------
+
+	show net-access
+	show allowed-client
+
+	set net-access
+	add allowed-client <options>
+
+----------User and Roles--------
+
+	show users
+	show user _name
+
+	show rba <options>
+
+	add user _name uid _userID homedir _path
+	add user _name uid 0 homedir _path //Radius
+	set user _name <options>
+
+	add rba role _name domain-type System
+	add rba role _existingRoleName
+	add rba user _name
+	add rba user _name roles _role1,role2,...
+
+----------Pass and AAA----------
+
+	show password-controls <options>
+	show aaa radius-servers <options>
+	show aaa tacacs-servers <options>
+
+	set password-controls <options>
+	set aaa radius-servers <options>
+	set aaa tacacs-servers <options>
+
+----------VRRP------------------
+
+	show mcvr <opitons>
+	show vrrp <options>
+
+	add mcvr vrid _X
+	set mcvr vrid _X
+
+	set vrrp <options>
+	set vrrp interface _X
+
+----------Backup----------------
+
+	show backup <options>
+	show backup-scheduled <options>
+	show backups
+
+	add backup <options>
+	add backup-scheduled name _name <options>
+	set backup <options>
+	set backup-scheduled name _name <options>
+
+----------Gaia Web Server-------
+
+	show web
+	
+	set web <options>
+
+----------_---------------------
+
+show configuration
+show backups 
+ext_vsx_util
+ext_cpview
+ext_cpinfo
+show sysenv 
+cpstat -f[sensors [os]]
+show asset all
+show vsx
+	
+show snapshots
 cpstop
 cpstart
 
