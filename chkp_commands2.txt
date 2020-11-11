@@ -109,7 +109,7 @@ scrubd:$FWDIR/log/scrubd.elg
 
 #cat /proc/net/softnet_stat | cut -c1-27
 
-#fw ctl affinity -l -r
+
 
 #tcpdump -c 100 -eni (iface) not ether proto 0x0800 and not ether proto 0x0806 \
         and not stp
@@ -197,5 +197,73 @@ scrubd:$FWDIR/log/scrubd.elg
 
 #lvm_manager
 
+#fw ctl affinity -l -a -r -v
+#fw ctl affinity -l -r
+#fw ctl multik dynamic_dispatching get_mode
+#fw ctl multik dynamic_dispatching on|off
+
+#cpmq get -a
 --------vsx------
 #vs_bits - stat
+
+--------------------------
+fw ctl get int up_early_drop_optimization [X]
+-----------------
+
+
+//ClusterXL-------------
+#cphaprob syncstat
+#cphaprob state
+#cphaprob -a if
+#cphaprob -ia list
+#cpwd_admin list
+#ifconfig -a
+#fw getifs
+#fw ctl iflist
+#netstat -ni
+#netstat -anp
+#tcpdump -ni <PROBLEMATIC_IF> arp
+#tcpdump -ni <PROBLEMATIC_IF> icmp
+
+#cpvinfo $FWDIR/bin/fwd
+#ls -l $FWDIR/state/__tmp/FW1
+#ls -l $FWDIR/state/local/FW1
+
+#cpvinfo $CVPNDIR/bin/cvpnd
+#vmstat -n 1 20
+#cpstat -f policy fw
+#fw ctl pstat
+
+
+on VSX : #ls -l $FWDIR/state/__tmp/VSX
+on VSX : #ls -l $FWDIR/state/local/VSX
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///
