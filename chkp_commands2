@@ -1,0 +1,175 @@
+ping -s SIZE_BYTES IPV4
+#top -b -d 5 -n 720 > FILE
+
+#tcpdump -vn -s 1500 -i INT 'ether[20:2] == 0x2000' //discover cdp
+#tcpdump -vn -s 1500 -i INT ether proto 0x88cc //discover lldp
+
+#netstat -ni
+#netstat -s
+#netstat -c -ni 5
+
+#sar -u
+#sar -u -f /var/log/sa/saXX
+#sar -n EDEV
+#sar -P ALL
+
+#ls -1 /sys/class/net | grep -v ^lo | xargs -i ethtool -i {} | grep driver //nic driver
+#ls -1 /sys/class/net | xargs -i -t ethtool {} | grep -i speed //nic speed
+
+#ifconfig -a | more
+#ifconfig -a | grep MTU | grep -v LOOPBACK | grep -v "MTU:1500" //check MTU
+
+#ethtool -S INT | grep -i flow_control
+#ethtool -S INT | grep -i errors
+#ethtool -a INT
+#ethtool INT
+
+#cpstat -f sensors os
+#cpstat -f power_supply ps
+
+#tcpdump -vvv -ni INT stp
+switch/show spanning-tree detail
+switch/show spanning-tree summary
+
+#netstat -rn | grep ^0.0.0.0 //ARP
+#arp -an | wc -l//arp table
+#cat /proc/net/stat/arp_cache
+
+#lsmod
+#enabled_blades
+
+#cpwd_admin list
+#cat /var/log/dump/usermode
+
+fwd: $FWDIR/log/fwd.elg
+vpnd:$FWDIR/log/vpnd.elg
+cpd: #CPDIR/log/cpd.elg
+dlpu:$FWDIR/log/dlpu.elg
+ted: $FWDIR/log/ted.elg
+rad: $FWDIR/log/rad.elg
+scrubd:$FWDIR/log/scrubd.elg
+#tail $FWDIR/log/fwd.elg //
+#pstree
+#df -h
+#find /var/log -mount -type f -size +1000000 -ls
+
+
+
+
+#clusterXL_admin up|down [-p]
+#cphaprob -a if
+#cphaprob show_bond
+#cphaprob show_failover
+#show routed cluster-state-detailed
+#cphaprob mmagic
+#cphaconf cluser_id get
+#cphaprob syncstat
+#cphaprob -reset syncstat
+#grep cul_load_freeze /var/log/messages*
+#cphaprob ccp_encrypt
+#cphaconf ccp_encrypt on|off
+#ccp_analyzer
+
+#grep -c ^processor /proc/cpuinfo
+#fw ctl affinity -1
+#fw ctl multik dynamic_dispaching get_mode
+
+#fwaccel conns
+#fwaccel conns -f S
+#fwaccel stat
+#fwaccel stats -s
+#fwaccel on|off
+#fwaccel conns | grep IPV4 | grep IPV4
+#fw ctl fast_accel
+#fw ctl fast_accel show_table
+#fw ctl fast_accel show_state
+#fw tab -t f2f_addresses
+
+#fw ctl pstat
+#fw ctl conntab
+#fw tab -u -t connections | awk '{ print $2}'|sort -n |uniq -c|sort -nr|head -10 //connectins
+
+#sim affinity -s
+#sim affinity -a
+#sim affinity -c
+#cpd_sched_config print
+#cat $FWDIR/conf/fwaffinity.conf
+#cat sim_aff.conf
+
+#fw tab -u -f -t connections
+
+#cat /sbin/cpuinfo
+
+#mg_mng --show
+#ls -1 /sys/class/net | grep -v ^lo | xargs -i ethtool -g {} | less
+#cat /sbin/cpuinfo
+#cat $FWDIR/conf/fwaffinity.conf | grep -v "^#"
+#file $PPKDIR/boot/modules/sim_aff.config
+#tc -s qdisc show
+
+#cat /proc/net/softnet_stat | cut -c1-27
+
+#fw ctl affinity -l -r
+
+#tcpdump -c 100 -eni (iface) not ether proto 0x0800 and not ether proto 0x0806 \
+        and not stp
+#tcpdump -c 100 -eni (iface) [not] vlan
+#tcpdump -c 100 -eni (iface) vlan and not "(ether[14:2]&0x0fff = X or ether\
+        [14:2]&0x0fff = Z)"
+#tcpdump -eni any "ip[6:2] & 0x1fff!=0" //fragmented packets
+#ping -M want -s 3100 IP
+
+
+#fw ctl get int fwlic_num_of_allowed_cores
+#cplic print
+
+#fw ctl set int fw_antispoofing_enabled 0 [-a] //turnoff antispoofing
+
+
+#fwx_cache  //xx
+#fwx_alloc //xx
+#fw tab -t fwx_cache -s
+#fw tab -u -t fwx_cache | awk '{print $3}' | cut -c5-8 | sort -n | uniq -c \
+        | sort -nr | head -20
+#fw ctl set int fwx_do_nat_cache 0 //disable NAT
+
+#fw tab -u -t connections | grep -ci IPV4HEX
+#fw ctl arp
+
+#fw ctl set int fw_rst_expired_conn 1
+#fw ctl set int fw_reject_non_syn 1
+
+#fw up_execute src=IPV4 dst=IPV4 dport=PORT ipp=6
+#ip route get IPV4
+#tcptraceroute -4 -T -p IPV4
+
+#vpn tu tlist
+#vpn tu mstats
+#dmesg | grep AES
+#vpn accel
+#vpn show_tcpt
+
+#ips on|off
+#fw amw unload //turnoff TP except IPS
+#fw amw fetch local //load all
+
+#rad_admin stats on (urlf|appi|malware|av)
+#fw tab -t urlf_cache_tbl -s
+#cat $FWDIR/log/rad_events
+
+#cipher_util
+
+#fw ctl multik prioq
+#fw ctl multik print_heavy_conn
+#fw ctl multik gconn
+
+#fwaccel dos stats get
+#fwaccel dos config set --enable-internal
+#fwaccel dos config set --enable-monitor
+#fwaccel dos config set --disable-monitor
+
+#fgate stat
+#fgate ctl etmreg on|off
+
+#fwaccel templates -d
+#fw sam_policy add quota
