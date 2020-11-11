@@ -16,7 +16,7 @@ General Config Router/Switch
 
 	#ping dest_ip [source from_ip]
 	#traceroute dest_ip
-	
+
 	#terminal lenght X
 	(config)hostname _name
 	(config)no ip domain-lookup
@@ -105,16 +105,16 @@ SSH / config
 	(config)line vty 0 15
 		login local
 		transport input [ssh|telnet|all]
-	
+
 -----------------------------------------
 	(config)interface vlan X
 		ip address my_ip my_mask
 		no shutdown
-	(config)interface vlan X 
+	(config)interface vlan X
 		ip address dhcp
 		no shutdown
 	(config)ip default-gateway dest_ip
-	
+
 
 --------VLAN-----------------
 
@@ -173,7 +173,7 @@ ROAS
 
 	(config-if)spanning-tree portfast [disable]
 	(config)spanning-tree portfast default
-		
+
 	(config-if)spanning-tree bpduguard [enable|disable]
 	(config)[no]spanning-tree portfast bpduguard default
 	(config)spanning-tree portfast edge bpduguard
@@ -190,21 +190,21 @@ RSTP
 	(config-if)channel-group X mode on
 		   channel-group X mode [active|desirable]/
 				           /[auto|passive]
-	
+
 -------L3Switch---------
 
 Vlan
 	(config)interface vlan X
 		ip address my_ip my_mask
-		no shutdown	
+		no shutdown
 	(config)int_name
 		no switchport
 		ip addres my_ip my_mask
 
 	(config)ip routing
-	
+
 ---------------------------------
-	
+
 DHCP
 
 	#show ip dhcp [binding|pool _name|server statistics/
@@ -212,7 +212,7 @@ DHCP
 	#show dhcp [server|lease]
 	#clear ip dhcp conflict
 
-	(config)ip dhcp pool _name	
+	(config)ip dhcp pool _name
 		network net_ip/x
 		default-router dg_ip
 		dns-server dns_ip
@@ -227,13 +227,13 @@ DHCP
 
 		domain-name zzzz
 		next-server zzz.zzz.zzz.zzz
-	
+
 --------ROUTING---------------
-	
+
 	(config)no ip route
 	(config)ip default-gateway gw_ip
-	
-	#show ip bgp/? neighbor 
+
+	#show ip bgp/? neighbor
 
 	#show ip cef
 	#show ip route [ |connected|_ip|static]
@@ -241,7 +241,7 @@ DHCP
 	#show ip interface brief
 	#show controllers
 	#clear ip route *
-	
+
 	(config)ip route 0.0.0.0 0.0.0.0 [int|dest_ip]
 
 Static v6
@@ -293,7 +293,7 @@ OSPF
 		area X stub no-summary
 		redistribute connected subnets
 		passive-interface int_name [default]
-	
+
 		auto-cost reference-bandwidth X
 		maximum-paths X
 
@@ -305,29 +305,29 @@ OSPFv3
 	#show ipv6 protocols
 	#show ipv6 route [ospf]
 
-	(config)ipv6 router ospf X	
+	(config)ipv6 router ospf X
 
 	(config)ipv6 unicast-routing
 	(config-if)ipv6 enable
 	(config-if)ipv6 address my_ipv6
-	(config-if)ipv6 ospf X area X 
+	(config-if)ipv6 ospf X area X
 		router-id ipv4_format
 
 EIGRP
-	
+
 	#show ip eigrp [neighbors|top|interface [detail]]
 	#show ip route eigrp
 	#show ip protocol
-	
+
 	(config)router eigrp X
 		[eigrp] router-id ip_format
 		network net_ip [wild_mask]
 		variance X
-		metric weights 0 1 0 1 0 0 
+		metric weights 0 1 0 1 0 0
 
 		[no]auto-summary
 		passive-interface [int_name|default]
-	
+
 	(config-if)no ip split-horizon eigrp X
 	(config-if)[delay|bandwidth] X
 	(config-if)ip [hello-interval|hold-time] eigrp X X
@@ -340,7 +340,7 @@ EIGRPv6
 	#show ipv6 eigrp [route|interfaces[detail]/
 					/|int_name]
 	#show ipv6 eigrp topology
-		
+
 	(config)ipv6 unicast-routing
 	(config)ipv6 router eigrp X
 		eigrp router-id ipv4_format
@@ -356,7 +356,7 @@ BGP
 		neighbor neighbor_ip update-source/
 				      /[loopback 0]
 		network net_ip mask net_mask
-		
+
 --------FHRP-----------------
 
 HSRP
@@ -400,7 +400,7 @@ ACL - Ext
 				  /dest_net wild_mask
 	(config)access-list extended X
 		no X
-		
+
 ACLv6
 
 	#show ipv6 access-list
@@ -452,16 +452,16 @@ PAT
 	(config)ipv6 unicast-routing
 	(config-if)ipv6 address netv6/64
 	(config-if)ipv6 address netv6/64 eui-64
-	
-	(config)ipv6 route dest_netv6/64 [next_ipv6|int] 
-	(config)ipv6 route dest_ipv6/128 [next_ipv6|int] 
+
+	(config)ipv6 route dest_netv6/64 [next_ipv6|int]
+	(config)ipv6 route dest_ipv6/128 [next_ipv6|int]
 	(config)ipv6 route ::/0 [next_ipv6|int]
 
 --------PPP---------
 
 	#show controller int_serial
-	(config-if)clock rate 
-		
+	(config-if)clock rate
+
 PAP
 
 	(config-if)encapsulation ppp
@@ -483,13 +483,13 @@ Multilink
 		ip address link_ip link_mask
 		encapsulation ppp
 		ppp multilink
-		ppp multilink group 1 
+		ppp multilink group 1
 
 GRE
 
 	(config)interface tunnel X
 	(config-if)ip address gre_ip gre_mask
-	(config-if)tunnel source [my_ip|int_name] 
+	(config-if)tunnel source [my_ip|int_name]
 	(config-if)tunnel destiation [dest_ip|int_name]
 
 	(config-if)tunnel mode gre ipv6
@@ -520,13 +520,13 @@ PPPoE
 	(config)aaa authentication login default group/
 	/[radius|tacas+] local none
 	(config)aaa autorization ?
-		
+
 
 Tacas+
 	(config)tacas server _name
 		key [X] _pwd
-		address [ipv4|ipv6] my_ip  
-			
+		address [ipv4|ipv6] my_ip
+
 Radius
 
 
@@ -535,7 +535,7 @@ Radius
 		address my_ip
 
 --------SPAN----------------
-	
+
 	#show monitor
 	(config)monitor session X source vlan X both
 	(config)monitor sessions X destination/
@@ -548,7 +548,7 @@ Radius
 
 
 
-	
+
 
 
 <end>

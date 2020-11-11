@@ -1,0 +1,28 @@
+COMMUNITY
+https://community.checkpoint.com/t5/General-Topics/Security-Gateway-Performance-Optimization-VSX/td-p/32107
+https://community.checkpoint.com/t5/General-Topics/Super-Seven-Performance-Assessment-Commands-s7pac/m-p/40528
+https://community.checkpoint.com/t5/Scripts/ccc-Common-Check-Point-Commands/m-p/38488#M8207
+
+BEST PRACTICES
+http://supportcontent.checkpoint.com/solutions?id=sk98348       //Best Practices - Security Gateway Performance
+
+ATRGs
+
+
+
+SK
+http://supportcontent.checkpoint.com/solutions?id=sk30583       //What is FW Monitor?
+http://supportcontent.checkpoint.com/solutions?id=sk35990       //How Connections Table limit capacity behaves in CoreXL 
+http://supportcontent.checkpoint.com/solutions?id=sk39555       //Capacity Optimization and Connections Table
+
+
+http://supportcontent.checkpoint.com/solutions?id=sk88160       //The Check Point Performance Sizing Utility (CPSizeMe)
+http://supportcontent.checkpoint.com/solutions?id=sk95566       //Managing partition sizes via LVM manager on Gaia OS
+http://supportcontent.checkpoint.com/solutions?id=sk97638       //Check Point Processes and Daemons
+http://supportcontent.checkpoint.com/solutions?id=sk98028       //Jumbo Hotfix Accumulator FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk101878      //CPView Utility
+http://supportcontent.checkpoint.com/solutions?id=sk115142      //Switch drops Check Point CCP packets when CCP is working in multicast mode
+
+http://supportcontent.checkpoint.com/solutions?id=sk121447      //How to perform an automated health check of a Gaia based system
+http://supportcontent.checkpoint.com/solutions?id=sk141412      //Running tcpdump causes high CPU usage - Introducing cppcap
+http://supportcontent.checkpoint.com/solutions?id=sk141812      //Firmware Update Hotfix for 40GBE and 100/25GBE Cards

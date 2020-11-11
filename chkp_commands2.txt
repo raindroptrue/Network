@@ -173,3 +173,29 @@ scrubd:$FWDIR/log/scrubd.elg
 
 #fwaccel templates -d
 #fw sam_policy add quota
+
+
+#cpinfo -y all
+#cat /proc/interrupts
+#cat /proc/interrupts | grep -E "CPU|eth"
+#watch -d -n 1 'cat /proc/interrupts | grep -E "CPU|eth"'
+
+
+#fw tab -t connections -u > /var/log/Connections_Table.txt
+#cpstat -f multi_cpu os
+#cpstat -f memory os
+#cat /proc/meminfo
+#ps auxww | sort -nrk 3
+
+
+#system_info System Information
+>show asset system
+
+
+#cat /proc/slabinfo | grep "arp"
+#ip -s -s neigh show nud all | grep ".*" -c
+
+#lvm_manager
+
+--------vsx------
+#vs_bits - stat

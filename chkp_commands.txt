@@ -1,11 +1,11 @@
 ----------1st time wizzard--------
-	
+
 	(ex)config_system -f
 	(ex)config_system -t _fname
 	(ex)config_system -config-file _fname --dry-run
 
 ---------Bonding----------------
-	
+
 	show bonding group _bondID
 
 	add bonding group _bondID
@@ -28,13 +28,13 @@
 ----------Management Int--------
 
 	show management interface
-	
+
 	set management interface _intname
 
 ----------Loop back-------------
 
 	show interface _intName
-	
+
 	add interface lo loopback _ipv4
 	set interface _intName ipv4-address <options>
 
@@ -65,12 +65,12 @@
 
 	show netflow collector
 	show netflow all
-	
+
 	add netflow collerctor ip _ipv4 port _port
 	set netflow collector for-ip _ip
 
 ----------VTI-------------------
-	
+
 	show vpn tunnel _vtiName
 	show vpn tunnels
 
@@ -80,7 +80,7 @@
 
 	show [clock|time|timezone]
 	show ntp <options>
-		
+
 	set [time|date|timezone]
 	set ntp <options>
 
@@ -99,7 +99,7 @@
 
 ----------Cron------------------
 
-	show cron 
+	show cron
 
 	set cron job <options>
 	add cron job <options>
@@ -114,7 +114,7 @@
 	set domainname _domian
 
 	show dns <options>
-	
+
 	set dns <options>
 
 ----------Main Notification-----
@@ -213,21 +213,21 @@
 ----------Gaia Web Server-------
 
 	show web
-	
+
 	set web <options>
 
 ----------_---------------------
 
 show configuration
-show backups 
+show backups
 ext_vsx_util
 ext_cpview
 ext_cpinfo
-show sysenv 
+show sysenv
 cpstat -f[sensors [os]]
 show asset all
 show vsx
-	
+
 show snapshots
 cpstop
 cpstart
@@ -281,5 +281,3 @@ vphsptob state
 vsx stat -v
 vsenv <vsid>
 ip ro get
-
-
