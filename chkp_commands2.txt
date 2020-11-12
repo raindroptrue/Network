@@ -240,16 +240,24 @@ on VSX : #ls -l $FWDIR/state/local/VSX
 ----------------------
 
 
+#fw ctl arp
+#fw ctl arp -n
+#arp -a
+#arp -e
 
 
+#fw ctl chain
+#fw ctl multik prioq
+#fw ctl multik print_heavy_conn
 
+#cat /proc/smt_status
+#fwaccel synatk
 
-
-
-
-
-
-
+#ps auxw | grep -v grep | grep -E "PID|snmpd"
+#netstat -an | grep -v grep | grep -E 'Foreign|161'
+#snmpwalk -v 2c -c <COMMUNITY_NAME> localhost 1.3.6.1.2.1 | head -n 15
+#snmpwalk -v3 -u USERNAME -l authNoPriv -a MD5 -A PASSPHRASE localhost \
+        1.3.6.1.4.1.2620 | head -n 15
 
 
 
