@@ -1,5 +1,7 @@
 BEST PRACTICES
+http://supportcontent.checkpoint.com/solutions?id=sk31841       //Best Practices - LDAP Configuration (orginal: LDAP Configuration - Best Practice)
 http://supportcontent.checkpoint.com/solutions?id=sk55081       //Best Practices - Manual fail-over in ClusterXL
+http://supportcontent.checkpoint.com/solutions?id=sk88520       //Best Practices - Identity Awareness Large Scale Deployment
 http://supportcontent.checkpoint.com/solutions?id=sk98348       //Best Practices - Security Gateway Performance
 http://supportcontent.checkpoint.com/solutions?id=sk98552       //Best Practices - SNMP
 http://supportcontent.checkpoint.com/solutions?id=sk103657      //Best Practices - IPS
@@ -15,9 +17,42 @@ http://supportcontent.checkpoint.com/solutions?id=sk73220       //ATRG: Applicat
 http://supportcontent.checkpoint.com/solutions?id=sk86441       //ATRG: Identity Awareness
 http://supportcontent.checkpoint.com/solutions?id=sk98737       //ATRG: CoreXL
 http://supportcontent.checkpoint.com/solutions?id=sk104760      //ATRG: VPN Core
+http://supportcontent.checkpoint.com/solutions?id=sk114806      //ATRG: Threat Emulation
+http://supportcontent.checkpoint.com/solutions?id=sk114807      //ATRG: Threat Extraction
 http://supportcontent.checkpoint.com/solutions?id=sk153832      //ATRG: SecureXL for R80.20 and higher
 
+
+FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk65123       //HTTPS Inspection FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk66761       //Identity Awareness Support for Terminal Servers - FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk98028       //Jumbo Hotfix Accumulator FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk164998      //Terminal Server Agent v2 (MUH2) - FAQ
+
+
+How to's
+http://supportcontent.checkpoint.com/solutions?id=sk42181       //How to increase the size of a ring buffer on SecurePlatform/Gaia for Intel NIC and Broadcom NIC
+http://supportcontent.checkpoint.com/solutions?id=sk43733       //How to measure CPU time consumed by IPS protection
+http://supportcontent.checkpoint.com/solutions?id=sk50840       //How to enable ClusterXL Virtual MAC (VMAC) mode
+http://supportcontent.checkpoint.com/solutions?id=sk56060       //How to perform manual fail-over between instances of Virtual System in VSX cluster in VSLS mode
+http://supportcontent.checkpoint.com/solutions?id=sk56202       //How to troubleshoot failovers in ClusterXL
+http://supportcontent.checkpoint.com/solutions?id=sk62570       //How to troubleshoot failovers in ClusterXL - Advanced Guide
+http://supportcontent.checkpoint.com/solutions?id=sk65205       //How to install SecurePlatform / Gaia from a USB device on Check Point appliance and Open Servers using ISOmorphic Tool
+http://supportcontent.checkpoint.com/solutions?id=sk81200       //How to Install a License
+http://supportcontent.checkpoint.com/solutions?id=sk85780       //How to use the 'connstat' utility
+http://supportcontent.checkpoint.com/solutions?id=sk90422       //How to modify URL Filtering cache size?
+http://supportcontent.checkpoint.com/solutions?id=sk90860       //How to configure SNMP on Gaia OS
+http://supportcontent.checkpoint.com/solutions?id=sk100395      //How to backup and restore VSX gateway
+http://supportcontent.checkpoint.com/solutions?id=sk103154      //How to block traffic coming from known malicious IP addresses
+http://supportcontent.checkpoint.com/solutions?id=sk112061      //How to create and view Suspicious Activity Monitoring (SAM) Rules
+http://supportcontent.checkpoint.com/solutions?id=sk112454      //How to configure Rate Limiting rules for DoS Mitigation (R80.20 and higher)
+http://supportcontent.checkpoint.com/solutions?id=sk112734      //How to collect System Activity Report using the "sar" command
+http://supportcontent.checkpoint.com/solutions?id=sk121447      //How to perform an automated health check of a Gaia based system
+
+
 SK
+http://supportcontent.checkpoint.com/solutions?id=sk11054       //Check Point License Guide
+
+http://supportcontent.checkpoint.com/solutions?id=sk30545       //What is Office Mode?
 http://supportcontent.checkpoint.com/solutions?id=sk30583       //What is FW Monitor?
 http://supportcontent.checkpoint.com/solutions?id=sk31511       //Check Point Security Gateway on SecurePlatform / Gaia freezes, crashes, or reboots randomly, core dump files are not created
 http://supportcontent.checkpoint.com/solutions?id=sk32578       //SecureXL Mechanism
@@ -26,49 +61,39 @@ http://supportcontent.checkpoint.com/solutions?id=sk35990       //How Connection
 http://supportcontent.checkpoint.com/solutions?id=sk39555       //Capacity Optimization and Connections Table
 
 http://supportcontent.checkpoint.com/solutions?id=sk42096       //Cluster member is stuck in 'Ready' state
-http://supportcontent.checkpoint.com/solutions?id=sk42181       //How to increase the size of a ring buffer on SecurePlatform/Gaia for Intel NIC and Broadcom NIC
-http://supportcontent.checkpoint.com/solutions?id=sk43733       //How to measure CPU time consumed by IPS protection
 http://supportcontent.checkpoint.com/solutions?id=sk44186       //Enable generation of kernel core dump file on Check Point Security Gateway on SecurePlatform / Gaia
 
-http://supportcontent.checkpoint.com/solutions?id=sk56060       //How to perform manual fail-over between instances of Virtual System in VSX cluster in VSLS mode
-http://supportcontent.checkpoint.com/solutions?id=sk56202       //How to troubleshoot failovers in ClusterXL
-
-http://supportcontent.checkpoint.com/solutions?id=sk62570       //How to troubleshoot failovers in ClusterXL - Advanced Guide
-http://supportcontent.checkpoint.com/solutions?id=sk65123       //HTTPS Inspection FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk60301       //Identity Awareness AD Query
 http://supportcontent.checkpoint.com/solutions?id=sk66527       //Recommended configuration for ClusterXL
-http://supportcontent.checkpoint.com/solutions?id=sk66761       //Identity Awareness Support for Terminal Servers - FAQ
 
 http://supportcontent.checkpoint.com/solutions?id=sk79240       //Hit Count debugging
 
-http://supportcontent.checkpoint.com/solutions?id=sk85780       //How to use the 'connstat' utility
 http://supportcontent.checkpoint.com/solutions?id=sk88160       //The Check Point Performance Sizing Utility (CPSizeMe)
+http://supportcontent.checkpoint.com/solutions?id=sk88780       //Troubleshooting "No valid SA" error
 
-http://supportcontent.checkpoint.com/solutions?id=sk90422       //How to modify URL Filtering cache size?
-http://supportcontent.checkpoint.com/solutions?id=sk90860       //How to configure SNMP on Gaia OS
 http://supportcontent.checkpoint.com/solutions?id=sk91400       //System Backup and Restore feature in Gaia
 http://supportcontent.checkpoint.com/solutions?id=sk92723       //Cluster flapping prevention
 http://supportcontent.checkpoint.com/solutions?id=sk92804       //Sync Redundancy in ClusterXL
 http://supportcontent.checkpoint.com/solutions?id=sk93000       //SMT (HyperThreading) Feature Guide
 http://supportcontent.checkpoint.com/solutions?id=sk95566       //Managing partition sizes via LVM manager on Gaia OS
+http://supportcontent.checkpoint.com/solutions?id=sk97443       //Support Debug Tools
 http://supportcontent.checkpoint.com/solutions?id=sk97638       //Check Point Processes and Daemons
-http://supportcontent.checkpoint.com/solutions?id=sk98028       //Jumbo Hotfix Accumulator FAQ
 http://supportcontent.checkpoint.com/solutions?id=sk98339       //Location of 'table.def' files on Security Management Server
 
-http://supportcontent.checkpoint.com/solutions?id=sk100395      //How to backup and restore VSX gateway
 http://supportcontent.checkpoint.com/solutions?id=sk101878      //CPView Utility
 http://supportcontent.checkpoint.com/solutions?id=sk102455      //File upload over HTTP or FTP through Security Gateway is slow or fails
-http://supportcontent.checkpoint.com/solutions?id=sk103154      //How to block traffic coming from known malicious IP addresses
 http://supportcontent.checkpoint.com/solutions?id=sk103212      //Traffic analysis using the 'CPMonitor' tool
 http://supportcontent.checkpoint.com/solutions?id=sk105261      //CoreXL Dynamic Dispatcher
 http://supportcontent.checkpoint.com/solutions?id=sk105762      //Firewall Priority Queues in R77.30 / R80.x
 http://supportcontent.checkpoint.com/solutions?id=sk108235      //Identity Collector - Technical Overview
 http://supportcontent.checkpoint.com/solutions?id=sk108600      //VPN Site-to-Site with 3rd party
 
-http://supportcontent.checkpoint.com/solutions?id=sk112454      //How to configure Rate Limiting rules for DoS Mitigation (R80.20 and higher)
-http://supportcontent.checkpoint.com/solutions?id=sk112734      //How to collect System Activity Report using the "sar" command
+http://supportcontent.checkpoint.com/solutions?id=sk111158      //Central Deployment Tool (CDT)
 http://supportcontent.checkpoint.com/solutions?id=sk115142      //Switch drops Check Point CCP packets when CCP is working in multicast mode
+http://supportcontent.checkpoint.com/solutions?id=sk116375      //Zero Touch Cloud Service for Gaia OS and Gaia Embedded SMB appliances
 
-http://supportcontent.checkpoint.com/solutions?id=sk121447      //How to perform an automated health check of a Gaia based system
+http://supportcontent.checkpoint.com/solutions?id=sk120193      //Blink - Gaia Fast Deployment
+http://supportcontent.checkpoint.com/solutions?id=sk122323      //Log Exporter - Check Point Log Export
 http://supportcontent.checkpoint.com/solutions?id=sk125092      //The DiagnosticsView application for CPInfo output and CPView DB analysis
 http://supportcontent.checkpoint.com/solutions?id=sk125152      //ClusterXL Error Messages
 
@@ -81,7 +106,7 @@ http://supportcontent.checkpoint.com/solutions?id=sk151114      //"fwaccel off" 
 http://supportcontent.checkpoint.com/solutions?id=sk153373      //Multi-Queue Management for Check Point Security Gateway
 http://supportcontent.checkpoint.com/solutions?id=sk156672      //SecureXL Fast Accelerator (fw fast_accel) for R80.20 and above
 
-http://supportcontent.checkpoint.com/solutions?id=sk164998      //Terminal Server Agent v2 (MUH2) - FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk169154      //Asymmetric Connections in ClusterXL R80.20 and Higher
 
 EXTRA
 https://community.checkpoint.com/t5/General-Topics/Outbound-SSL-Inspection-A-war-story/td-p/58647
@@ -89,6 +114,8 @@ https://community.checkpoint.com/t5/General-Topics/Security-Gateway-Performance-
 https://community.checkpoint.com/t5/General-Topics/White-Papers-Publishing-Project/m-p/53242#M10603
 https://community.checkpoint.com/t5/General-Topics/Super-Seven-Performance-Assessment-Commands-s7pac/m-p/40528
 https://community.checkpoint.com/t5/General-Topics/DiagnosticsView-CPInfo-Viewer/m-p/27551
+https://community.checkpoint.com/t5/General-Topics/What-does-Sticky-Decision-Function-DO/td-p/24534
+https://community.checkpoint.com/t5/General-Topics/Security-Gateway-Packet-Flow-and-Acceleration-with-Diagrams/td-p/40244
 
 https://community.checkpoint.com/t5/Scripts/ccc-Common-Check-Point-Commands/m-p/38488#M8207
 
@@ -96,8 +123,11 @@ https://community.checkpoint.com/t5/Policy-Management/R80-Change-Control-A-Visua
 
 https://community.checkpoint.com/t5/Compliance-and-SmartEvent/CPViewer-visualize-your-cpview-cpinfo-files-in-5-minutes/m-p/71153
 
+https://www.checkpoint.com/downloads/products/r80.10-security-management-architecture-overview.pdf
 
-
+GOLD
+https://community.checkpoint.com/t5/General-Topics/R80-x-Architecture-and-Performance-Tuning-Link-Collection/m-p/47883#M9336
+http://www.maxpowerfirewalls.com/
 
 
 
