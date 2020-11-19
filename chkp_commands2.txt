@@ -119,6 +119,7 @@ scrubd:$FWDIR/log/scrubd.elg
 #tcpdump -eni any "ip[6:2] & 0x1fff!=0" //fragmented packets
 #ping -M want -s 3100 IP
 
+fw ctl chain
 
 #fw ctl get int fwlic_num_of_allowed_cores
 #cplic print
