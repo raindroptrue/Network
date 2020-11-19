@@ -1,3 +1,6 @@
+-----------------------------Super 7--------------------------------------------
+-----------------------------And Rest ------------------------------------------
+--------------------------------------------------------------------------------
 ping -s SIZE_BYTES IPV4
 #top -b -d 5 -n 720 > FILE
 
@@ -119,7 +122,12 @@ scrubd:$FWDIR/log/scrubd.elg
 #tcpdump -eni any "ip[6:2] & 0x1fff!=0" //fragmented packets
 #ping -M want -s 3100 IP
 
+--
 fw ctl chain
+$FWDIR/conf/fwauthd.conf
+fw tab -s
+fw tab - connections -f /impact
+--
 
 #fw ctl get int fwlic_num_of_allowed_cores
 #cplic print
