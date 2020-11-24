@@ -16,6 +16,12 @@ ping -s SIZE_BYTES IPV4
 #sar -n EDEV
 #sar -P ALL
 
+
+---cc---
+show routed cluster-state detailed
+tcptraceroute
+fw ctl set int fw_antispoofing_enabled 0|1
+
 #ls -1 /sys/class/net | grep -v ^lo | xargs -i ethtool -i {} | grep driver //nic driver
 #ls -1 /sys/class/net | xargs -i -t ethtool {} | grep -i speed //nic speed
 
@@ -26,6 +32,9 @@ ping -s SIZE_BYTES IPV4
 #ethtool -S INT | grep -i errors
 #ethtool -a INT
 #ethtool INT
+
+#cat $FWDIR/conf/fwauthd.conf
+#cpwd_admin list
 
 #cpstat -f sensors os
 #cpstat -f power_supply ps
@@ -43,6 +52,8 @@ switch/show spanning-tree summary
 
 #cpwd_admin list
 #cat /var/log/dump/usermode
+
+#fw ctl get int fwha_vmac_global_param_enabled
 
 fwd: $FWDIR/log/fwd.elg
 vpnd:$FWDIR/log/vpnd.elg
@@ -88,6 +99,12 @@ scrubd:$FWDIR/log/scrubd.elg
 #fw ctl fast_accel show_state
 #fw tab -t f2f_addresses
 
+#cpmq get|set
+#mdsstop
+#mdsstart
+
+#threshold_config  //snmp
+
 #fw ctl pstat
 #fw ctl conntab
 #fw tab -u -t connections | awk '{ print $2}'|sort -n |uniq -c|sort -nr|head -10 //connectins
@@ -102,6 +119,8 @@ scrubd:$FWDIR/log/scrubd.elg
 #fw tab -u -f -t connections
 
 #cat /sbin/cpuinfo
+
+#cpwd_admin list
 
 #mg_mng --show
 #ls -1 /sys/class/net | grep -v ^lo | xargs -i ethtool -g {} | less
@@ -157,6 +176,7 @@ fw tab - connections -f /impact
 #dmesg | grep AES
 #vpn accel
 #vpn show_tcpt
+#cvpnrestart
 
 #ips on|off
 #fw amw unload //turnoff TP except IPS
@@ -254,6 +274,13 @@ on VSX : #ls -l $FWDIR/state/local/VSX
 #arp -a
 #arp -e
 
+fw tab -s
+cphaprob igmp
+cphaprob -ia list
+fw ctl pstat
+show sysenv all
+cinfo -y all
+fw ctl multik stat
 
 #fw ctl chain
 #fw ctl multik prioq
