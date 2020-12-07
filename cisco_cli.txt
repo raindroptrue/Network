@@ -1,9 +1,14 @@
-General Config Router/Switch
-	#dir
-	#write erase
-	#delate flash:vlan.dat
-	#erase startup-config
+------------------------GENERAL-------------------------------------------------
+
+	#write erase->erase startup-config ->erase nvram
+
 	#reload
+	#dir
+	#delate flash:vlan.dat
+	
+	(config-if)speed
+	(config-if)duplex
+
 	(config)service timestamps ?
 	#show logging
 	#show file system|version|flash
@@ -26,7 +31,7 @@ General Config Router/Switch
 
 	#show running-config [int_name]
 	      protocols ?
-	      interfaces [ _ |stats|status]
+	      interfaces [stats|status]
 	      interfaces [switchport|trunk|vlan X]
 	      vlan [brief]
 	      ip interface brief
@@ -42,11 +47,12 @@ General Config Router/Switch
 	#show lldp neighbor
 	(config)[no] lldp run
 
-	#clear mac address-table dynamic
+	#clear mac address-table dynamic [vlan X|interface X]
+	#show mac address-table dynamic [vlan X|interface X]
 	#show mac address-table [aging-time / count]
 	                        dynamic [int_name/ vlan X]
 	                        [secure|sttic]
-	#show interfaces vlan 1
+	#show interfaces vlan X
 	#show ssh // show ip ssh
 
 	#show logging
@@ -65,7 +71,7 @@ Router
 	(config-if)bandwidth rate-in-kbps
 		   clock rate rate-in-bps
 
---------SECURITY-----------
+------------------------SECURITY------------------------------------------------
 
 Security - Passwords
 
@@ -104,7 +110,7 @@ SSH / config
 	(config)username _name secret _pwd
 	(config)line vty 0 15
 		login local
-		transport input [ssh|telnet|all]
+		transport input [ssh|telnet|all|none]
 
 -----------------------------------------
 	(config)interface vlan X
@@ -118,6 +124,7 @@ SSH / config
 
 --------VLAN-----------------
 
+	#show vlan [brief]
 	#show switchport
 	(config)interfaces int_name
 		switchport mode [access|trunk]
@@ -129,6 +136,7 @@ SSH / config
 
 Trunk
 
+	#show interface trunk
 	#show dtp interface int_name
 	#show interface int_name switchport
 	#show interface [int_name] trunk
@@ -177,6 +185,7 @@ ROAS
 	(config-if)spanning-tree bpduguard [enable|disable]
 	(config)[no]spanning-tree portfast bpduguard default
 	(config)spanning-tree portfast edge bpduguard
+	(config-if)switchport host
 
 RSTP
 	(config)spanning-tree mode [rapid-pvst|pvst|mst]
