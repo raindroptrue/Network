@@ -5,7 +5,10 @@
 	#reload
 	#dir
 	#delate flash:vlan.dat
-	
+
+	debug ip packet
+	u all
+
 	(config-if)speed
 	(config-if)duplex
 
@@ -19,17 +22,17 @@
 	(config)history size X
 
 
-	#ping dest_ip [source from_ip]
-	#traceroute dest_ip
+	#ping IP [source IP]
+	#traceroute IP
 
 	#terminal lenght X
-	(config)hostname _name
+	(config)hostname NAME
 	(config)no ip domain-lookup
 	(config)line con 0
 		exec-timeout _hh _min
 		logging synchronous
 
-	#show running-config [int_name]
+	#show running-config [INT]
 	      protocols ?
 	      interfaces [stats|status]
 	      interfaces [switchport|trunk|vlan X]
@@ -39,7 +42,7 @@
 	      clear ip arp
 	      users
 
-	      cdp entry _name
+	      cdp entry NAME
 	      cdp neighbors [detail]
 	(config)[no] cdp run
 	(config-if)no cdp enable
@@ -64,134 +67,158 @@ Interfaces configuration
 
 	(config-if)duplex [auto|full|half]
 	           speed [auto|10|100|1000]
-	           description _name
+	           description NAME
 
 Router
 	#show controller ?
 	(config-if)bandwidth rate-in-kbps
 		   clock rate rate-in-bps
 
+------------------------PoE-----------------------------------------------------
+
+	#show power inline [INT]
+	(config-if)power inline {auto max X|consumption X|static X|never}
+
 ------------------------SECURITY------------------------------------------------
 
 Security - Passwords
 
 	(config)service password-encryption
-	(config)enable secret _pwd
-	(config)enable password _pwd
-	(config)user _name password _pwd
+	(config)enable secret PWD
+	(config)enable password PWD
+	(config)user NAME password PWD
 	(config)line [con 0|vty 0 15]
 		privilege level [0-15]
 		login [local]
-		password _pwd
+		password PWD
 
 Security - Switchport
 
 
-	#show port-security [ _ |int_name|address]
+	#show port-security [ _ |INT|address]
 	#show errdisable recovery
 	(config-if)switchport mode [access|trunk]
 		switchport port-security
-		switchport port-security mac-address/
-			   	    /[mac_ad|sticky]
+		switchport port-security mac-address [MAC|sticky]
 		switchport port-security maximum X
-		switchport port-security violation/
-	              /[protect|restrict|shutdown]
+		switchport port-security violation [protect|restrict|shutdown]
 
 
 SSH / config
 
 	#show ip ssh
 	#show ssh
-	(config)hostname _name
-	(config)ip domain-name _name
+
+	(config)hostname NAME
+	(config)ip domain-name NAME
 		crypto key generate rsa modulus XXX
 		crypto key zeroize rsa
 	(config)ip ssh version 2
-	(config)username _name secret _pwd
+	(config)username _name secret PWD
 	(config)line vty 0 15
 		login local
 		transport input [ssh|telnet|all|none]
 
------------------------------------------
+------------------------VDI-----------------------------------------------------
+
 	(config)interface vlan X
-		ip address my_ip my_mask
+		ip address IP MASK
 		no shutdown
 	(config)interface vlan X
 		ip address dhcp
 		no shutdown
-	(config)ip default-gateway dest_ip
+	(config)ip default-gateway IP
 
+------------------------VLAN----------------------------------------------------
 
---------VLAN-----------------
+	#show vlan [brief|id X]
+	#show [interface] switchport | [begin INT]
 
-	#show vlan [brief]
-	#show switchport
-	(config)interfaces int_name
-		switchport mode [access|trunk]
+	(config)vlan <1-4094>
+	(config)vlan X
+		name NAME
+
+	Access
+	(config)interfaces INT
+		switchport mode access
 		switchport access vlan <1-4094>
 		switchport voice vlan X
-	(config)vlan <1-4094>
-	(config)vlan XX
-		name _name
 
-Trunk
-
+	Trunk
 	#show interface trunk
-	#show dtp interface int_name
-	#show interface int_name switchport
-	#show interface [int_name] trunk
+	#show interface INT switchport
+	#show interface [INT] trunk
+
 	(config-if)switchport mode trunk desirable?
-	(config-if)switchport trunk encapsulation/
-		  	   /[dot1q|isl|negotiate]
+	(config-if)switchport trunk encapsulation [dot1q|isl|negotiate]
+	(config-if)switchport trunk allowed vlan {add|all|except|remove] VLAN_LIST
 	(config-if)switchport trunk native vlan X
+
+	DTP
+	#show dtp [interface]
+	#show [interface] switchport | [begin INT]
+
 	(config-if)switchport nonegotiate
 
-		   switchport trunk allowed vlan [add|all/
-			        /except|remove] vlan_list
-
-VTP
-
+	VTP
 	#show vtp [status|password]
+
 	(config)vtp mode [server|client|transparent|off]
-		vtp domain _name
-		vtp password _pwd
+		vtp domain NAME
+		vtp password PWD
 		vtp pruning
-		vtp version [1|2]
+		vtp version [1|2|3]
 
-ROAS
-	(config)interface int_name.vlan_id
-		encapsulation [dot1q|isl] vlan_id [native]
-		ip address my_ip my_mask
+	ROAS
+	(config)interface INT.VLANID
+		encapsulation [dot1q|isl] VLANID [native]
+		ip address IP MASK
 
+------------------------STP-----------------------------------------------------
 
---------STP-------------
-
+	STP
 	#show spanning-tree [root|summary]
-	#show spanning-tree [vlan X|int_name|state|detail]
+	#show spanning-tree [vlan X|INT|state|detail]
 	#show spanning-tree vlan X [root|bridge]
 
-	(config)spanning-tree vlan X root [primary/
-					  |secondary]
-	(config)spanning-tree vlan X priority X
-	(config-if)spanning-tree vlan X port-priority X
 	(config)spanning-tree pathcost method long
 
+	(config)spanning-tree vlan X root [primary|secondary]
+	(config)spanning-tree vlan X [hello-time X|forward-time X|max-age X]
+	(config)spanning-tree vlan X priority X
+
+	(config-if)spanning-tree vlan X port-priority X
 	(config-if)spanning-tree vlan X cost X
+
 	(config-if)spanning-tree link-type point-to-point
 
-	(config-if)spanning-tree portfast [disable]
-	(config)spanning-tree portfast default
+	xxxFAST
+	(config)spanning-tree uplinkfast [max-update-rate]
 
-	(config-if)spanning-tree bpduguard [enable|disable]
-	(config)[no]spanning-tree portfast bpduguard default
+	#show spanning-tree backbonefast
+	(config)spanning-tree backbonefast
+
+	PORTFAST
+	#show spanning-tree interface INT portfast
+
+	(config)spanning-tree portfast default
+	(config-if)spanning-tree portfast [disable]
+
+	GUARD
+	#show spanning inconsistentports
+	(config-if)spanning-tree guard root
+
 	(config)spanning-tree portfast edge bpduguard
+	(config)[no]spanning-tree portfast bpduguard default
+	(config-if)spanning-tree bpduguard [enable|disable]
+
 	(config-if)switchport host
 
-RSTP
+	RSTP
 	(config)spanning-tree mode [rapid-pvst|pvst|mst]
 
 
---------EtherChannel---------
+------------------------EtherChannel--------------------------------------------
 
 	#show interface port-channel X
 	#show etherchannel X [summary|port-channel|brief|/
