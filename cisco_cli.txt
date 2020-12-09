@@ -55,8 +55,7 @@
 	#show mac address-table [aging-time / count]
 	                        dynamic [int_name/ vlan X]
 	                        [secure|sttic]
-	#show interfaces vlan X
-	#show ssh // show ip ssh
+
 
 	#show logging
 	#[no]logging monitor|console
@@ -71,18 +70,19 @@ Interfaces configuration
 
 Router
 	#show controller ?
+
 	(config-if)bandwidth rate-in-kbps
 		   clock rate rate-in-bps
 
 ------------------------PoE-----------------------------------------------------
 
 	#show power inline [INT]
+
 	(config-if)power inline {auto max X|consumption X|static X|never}
 
 ------------------------SECURITY------------------------------------------------
 
-Security - Passwords
-
+----PASSWORD
 	(config)service password-encryption
 	(config)enable secret PWD
 	(config)enable password PWD
@@ -92,20 +92,25 @@ Security - Passwords
 		login [local]
 		password PWD
 
-Security - Switchport
+----KEY_CHAIN
+	(config)key chain NAME
+		key X
+		key-string X
 
-
-	#show port-security [ _ |INT|address]
+----SWITCHPORT
+	#show port-security [interface INT|address]
 	#show errdisable recovery
-	(config-if)switchport mode [access|trunk]
-		switchport port-security
-		switchport port-security mac-address [MAC|sticky]
-		switchport port-security maximum X
-		switchport port-security violation [protect|restrict|shutdown]
 
+	(config-if)switchport mode access
+	(config-if)switchport access vlan X
 
-SSH / config
+	(config-if)switchport port-security
+	(config-if)switchport port-security mac-address [MAC|sticky]
+	(config-if)switchport port-security maximum X
+	(config-if)switchport port-security aging [static|time X|type]
+	(config-if)switchport port-security violation [protect|restrict|shutdown]
 
+----SSH
 	#show ip ssh
 	#show ssh
 
@@ -119,7 +124,7 @@ SSH / config
 		login local
 		transport input [ssh|telnet|all|none]
 
-------------------------VDI-----------------------------------------------------
+------------------------SVI-----------------------------------------------------
 
 	(config)interface vlan X
 		ip address IP MASK
@@ -132,19 +137,19 @@ SSH / config
 ------------------------VLAN----------------------------------------------------
 
 	#show vlan [brief|id X]
+	#show interfaces vlan X
 	#show [interface] switchport | [begin INT]
 
-	(config)vlan <1-4094>
 	(config)vlan X
 		name NAME
 
-	Access
+----Access
 	(config)interfaces INT
 		switchport mode access
 		switchport access vlan <1-4094>
 		switchport voice vlan X
 
-	Trunk
+----Trunk
 	#show interface trunk
 	#show interface INT switchport
 	#show interface [INT] trunk
@@ -154,13 +159,13 @@ SSH / config
 	(config-if)switchport trunk allowed vlan {add|all|except|remove] VLAN_LIST
 	(config-if)switchport trunk native vlan X
 
-	DTP
+----DTP
 	#show dtp [interface]
 	#show [interface] switchport | [begin INT]
 
 	(config-if)switchport nonegotiate
 
-	VTP
+----VTP
 	#show vtp [status|password]
 
 	(config)vtp mode [server|client|transparent|off]
@@ -169,19 +174,22 @@ SSH / config
 		vtp pruning
 		vtp version [1|2|3]
 
-	ROAS
+----ROAS
 	(config)interface INT.VLANID
 		encapsulation [dot1q|isl] VLANID [native]
 		ip address IP MASK
 
 ------------------------STP-----------------------------------------------------
 
-	STP
+	(config-if)switchport host
+
+----STP
 	#show spanning-tree [root|summary]
 	#show spanning-tree [vlan X|INT|state|detail]
 	#show spanning-tree vlan X [root|bridge]
 
 	(config)spanning-tree pathcost method long
+	(config-if)spanning-tree link-type [point-to-point|shared]
 
 	(config)spanning-tree vlan X root [primary|secondary]
 	(config)spanning-tree vlan X [hello-time X|forward-time X|max-age X]
@@ -190,21 +198,19 @@ SSH / config
 	(config-if)spanning-tree vlan X port-priority X
 	(config-if)spanning-tree vlan X cost X
 
-	(config-if)spanning-tree link-type point-to-point
-
-	xxxFAST
+----xxxFAST
 	(config)spanning-tree uplinkfast [max-update-rate]
 
 	#show spanning-tree backbonefast
 	(config)spanning-tree backbonefast
 
-	PORTFAST
+----PORTFAST
 	#show spanning-tree interface INT portfast
 
 	(config)spanning-tree portfast default
 	(config-if)spanning-tree portfast [disable]
 
-	GUARD
+----GUARD
 	#show spanning inconsistentports
 	(config-if)spanning-tree guard root
 
@@ -212,32 +218,47 @@ SSH / config
 	(config)[no]spanning-tree portfast bpduguard default
 	(config-if)spanning-tree bpduguard [enable|disable]
 
-	(config-if)switchport host
+	(config)[no]spanning-tree portfast bpdufilter default
+	(config-if)spanning-tree bpdufilter [enable|disable]
 
-	RSTP
+	(config)[no]spanning-tree loopguard default
+	(config-if)spanning-tree guard [loop|none]
+
+----UDLD
+	(config)udld [aggressive|enable]
+	(config-if)udld port [aggressive]
+
+----RSTP
 	(config)spanning-tree mode [rapid-pvst|pvst|mst]
 
+----MST
+	(config-mst)show pending
 
 ------------------------EtherChannel--------------------------------------------
 
 	#show interface port-channel X
-	#show etherchannel X [summary|port-channel|brief|/
-					    /detail|port]
-	(config-if)channel-group X mode on
-		   channel-group X mode [active|desirable]/
-				           /[auto|passive]
+	#show etherchannel [X] [summary|port-channel|brief|detail|port]
+	#show [pagp|lacp] neighbors
 
--------L3Switch---------
+	(config-if)channel-group X mode [on|auto|desirable|active|passive]
+	(config)spanning-tree etherchannel guard misconfig
 
-Vlan
+	#show etherchannel load-balance
+	(config)port-channel load-balance ...
+
+------------------------L3Switch------------------------------------------------
+
+
 	(config)interface vlan X
-		ip address my_ip my_mask
+		ip address IP MASK
 		no shutdown
-	(config)int_name
+	(config)interface INT
 		no switchport
-		ip addres my_ip my_mask
+		ip addres IP MASK
+		no shutdown
 
-	(config)ip routing
+	#show ip route
+	(config)ip routomg
 
 ---------------------------------
 
@@ -264,8 +285,9 @@ DHCP
 		domain-name zzzz
 		next-server zzz.zzz.zzz.zzz
 
---------ROUTING---------------
+------------------------ROUTING-------------------------------------------------
 
+----STATIC
 	(config)no ip route
 	(config)ip default-gateway gw_ip
 
@@ -280,8 +302,7 @@ DHCP
 
 	(config)ip route 0.0.0.0 0.0.0.0 [int|dest_ip]
 
-Static v6
-
+----STATICv6
 	#show ipv6 interface [brief]
 	#show ipv6 route [connected|static|local]
 	#show ipv6 neighbors
@@ -295,8 +316,7 @@ Static v6
 
 	(config-if)ipv6 dhcp relay destination _ip
 
-RIPv2
-
+----RIPv2
 	#show ip route [rip]
 	#show ip rip database
 	(config)ip route dest_net dest_mask via_ip [X]
@@ -311,8 +331,7 @@ RIPv2
 
 	(config-if)[no]ip split-horiozn
 
-OSPF
-
+----OSPF
 	#clear ip ospf process [y]
 
 	#show ip route ospf
@@ -335,8 +354,7 @@ OSPF
 
 	(config-if)ip ospf [priority X|cost X|bandwidth X]
 
-OSPFv3
-
+----OSPFv3
 	#show ipv6 ospf [interface[brief]|neighbor]
 	#show ipv6 protocols
 	#show ipv6 route [ospf]
@@ -349,8 +367,7 @@ OSPFv3
 	(config-if)ipv6 ospf X area X
 		router-id ipv4_format
 
-EIGRP
-
+----EIGRP
 	#show ip eigrp [neighbors|top|interface [detail]]
 	#show ip route eigrp
 	#show ip protocol
@@ -371,8 +388,7 @@ EIGRP
 	(config-if)ip summary-address egrip X net_ip/
 				           /net_mask
 
-EIGRPv6
-
+----EIGRPv6
 	#show ipv6 eigrp [route|interfaces[detail]/
 					/|int_name]
 	#show ipv6 eigrp topology
@@ -382,8 +398,7 @@ EIGRPv6
 		eigrp router-id ipv4_format
 	(config-if)ipv6 eigrp X
 
-BGP
-
+----BGP
 	#show tcp brief
 	#show ip bgp summary
 	#show ip bgp neighbor [ip]
@@ -393,26 +408,42 @@ BGP
 				      /[loopback 0]
 		network net_ip mask net_mask
 
---------FHRP-----------------
+------------------------FHRP----------------------------------------------------
 
-HSRP
-
+----HSRP
 	#show standby [brief]
-	(config-if)standby X ip v_ip
+
+	(config-if)standby X ip IP
 	(config-if)standby X priority X
 	(config-if)standby X preempt [delay]
 	(config-if)standby X timers X X
+	(config-if)standby X track INT [X]
+	(config-if)standby X authentication md5 [key-string|key-chain] X
 	(config-if)standby version <1-2>
 
-VRRP
-
+----VRRP
 	#show vrrp [brief]
-	(config-if)vrrp X ip v_ip
 
---------ACL------------------
+	(config-if)vrrp X ip IP
+	(config-if)vrrp X priority X
+	(config)track X interface INT [ip|line-protocol]
+	(config-if)vrrp X track X [decrement X]
 
-ACL - Std
+----GLBP
+	#show glbp [brief]
+	#show glbp | begin Forwarder 1
 
+	(config-if)glbp X ip IP
+	(config-if)glbp X priority X
+	(config-if)glbp X timers [X X|redirect X X]
+	(config)track X interface INT [ip|line-protocol]
+	(config-if)glbp X weighting track X [decrement X]
+	(config-if)glbp X weighting X lower X upper X
+
+
+------------------------ACL-----------------------------------------------------
+
+----ACL_STD
 	#show access-list [X|_name]
 	#show ip access-list [X|_name]
 	#sh  int | sh ru
@@ -427,8 +458,7 @@ ACL - Std
 
 	(config-if)[no]ip access-group X [in|out]
 
-ACL - Ext
-
+----ACL_EXT
 	(config)access-list eX [p|d] prot_name from_net/
 	/wild_mask dest_net wild_mask [eq|gt|lt] prot_name
 	(config)ip access-list extended _name
@@ -437,8 +467,7 @@ ACL - Ext
 	(config)access-list extended X
 		no X
 
-ACLv6
-
+----ACLv6
 	#show ipv6 access-list
 	(config)ipv6 access-list _name
 		[p|d] from_ipv6 dest_ipv6
@@ -446,7 +475,7 @@ ACLv6
 		/host dest_ip [eq][port]
 	(config-if)ipv6 traffic-filter _name [in|out]
 
---------NTP-------------------
+------------------------NTP-----------------------------------------------------
 
 	#show clock
 	#show ntp associations
@@ -458,7 +487,7 @@ ACLv6
 	(config)ntp peer from_ip
 	(config-if)ntp broadcast [client]
 
---------Nat&&Pat-------------
+------------------------NAT-----------------------------------------------------
 
 	#show ip nat translation
 	#show ip nat stat
@@ -466,22 +495,22 @@ ACLv6
 
 	(config-if)ip nat [inside|outside]
 
-NAT - Static
+----NAT - Static
 
 	(config)ip nat inside source static int_ip glop_ip
 
-NAT - Dynamic
+----NAT - Dynamic
 
 	(config)access-list X permint net_ip wild_mask
 	(config)ip nat pool _name start_ip end_ip/
 		                /netmask net_mask
 	(config)ip nat inside source list acl_list/
 			           /pool pool_name
-PAT
+----PAT
 	(config)ip nat inside source list acl_list/
 		   /interface int_out_name overload
 
---------IPv6---------
+------------------------IPv6----------------------------------------------------
 
 	#show ipv6 interface [brief]
 	#show ipv6 route
@@ -493,7 +522,7 @@ PAT
 	(config)ipv6 route dest_ipv6/128 [next_ipv6|int]
 	(config)ipv6 route ::/0 [next_ipv6|int]
 
---------PPP---------
+------------------------PPP-----------------------------------------------------
 
 	#show controller int_serial
 	(config-if)clock rate
@@ -550,7 +579,7 @@ PPPoE
 		-
 		-
 		-
---------AAA----------------
+------------------------AAA-----------------------------------------------------
 
 	(config)aaa new model
 	(config)aaa authentication login default group/
@@ -570,7 +599,7 @@ Radius
 		key _pwd
 		address my_ip
 
---------SPAN----------------
+------------------------SPAN----------------------------------------------------
 
 	#show monitor
 	(config)monitor session X source vlan X both
