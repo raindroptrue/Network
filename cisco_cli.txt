@@ -12,7 +12,7 @@
 	(config-if)speed
 	(config-if)duplex
 
-	(config)service timestamps ?
+
 	#show logging
 	#show file system|version|flash
 	(config)banner [login|motd|exec] $
@@ -20,7 +20,6 @@
 	#show history [size X]
 	#terminal history size X
 	(config)history size X
-
 
 	#ping IP [source IP]
 	#traceroute IP
@@ -42,25 +41,22 @@
 	      clear ip arp
 	      users
 
-	      cdp entry NAME
-	      cdp neighbors [detail]
-	(config)[no] cdp run
-	(config-if)no cdp enable
-
-	#show lldp neighbor
-	(config)[no] lldp run
-
-	#clear mac address-table dynamic [vlan X|interface X]
-	#show mac address-table dynamic [vlan X|interface X]
-	#show mac address-table [aging-time / count]
-	                        dynamic [int_name/ vlan X]
-	                        [secure|sttic]
 
 
-	#show logging
+	#clear mac address-table dynamic [vlan X|interface INT]
+	#show mac address-table dynamic [vlan X|interface INT]
+	#show mac address-table [aging-time / count] dynamic [INT/ vlan X] [secure|sttic]
+
+	(config)ip arp instectionn [vlan X|validate ...]
+
+	#show ip verify source
+	(config-if)ip verify source
+	(config)ip source binding MAC vlan X IP interface INT
+	-
+	-h
+
 	#[no]logging monitor|console
 	#terminal monitor
-	#logging host|trap|buffered|
 
 Interfaces configuration
 
@@ -73,6 +69,32 @@ Router
 
 	(config-if)bandwidth rate-in-kbps
 		   clock rate rate-in-bps
+
+------------------------DiscoveryProtocol---------------------------------------
+----CDP
+	#show cdp [neighbor [detail]]
+
+	(config)[no]cdp run
+	(config-if)[no]cdp enable
+
+
+----LLDP
+
+
+------
+cdp entry NAME
+cdp neighbors [detail]
+(config)[no] cdp run
+(config-if)no cdp enable
+
+#show lldp neighbor
+(config)[no] lldp run
+
+------------------------StormControl--------------------------------------------
+
+	#show storm-control [action|broadcast|multicast|unicast|...]
+
+	(config-if)storm-control [action|broadcast|multicast|unicast] level X X
 
 ------------------------PoE-----------------------------------------------------
 
@@ -110,6 +132,9 @@ Router
 	(config-if)switchport port-security aging [static|time X|type]
 	(config-if)switchport port-security violation [protect|restrict|shutdown]
 
+	#show errdisable recovery
+	(config)errdisable recovery [cause ...|interval]
+
 ----SSH
 	#show ip ssh
 	#show ssh
@@ -119,7 +144,7 @@ Router
 		crypto key generate rsa modulus XXX
 		crypto key zeroize rsa
 	(config)ip ssh version 2
-	(config)username _name secret PWD
+	(config)username NAME secret PWD
 	(config)line vty 0 15
 		login local
 		transport input [ssh|telnet|all|none]
@@ -127,11 +152,9 @@ Router
 ------------------------SVI-----------------------------------------------------
 
 	(config)interface vlan X
-		ip address IP MASK
+		ip address [IP MASK|dhcp]
 		no shutdown
-	(config)interface vlan X
-		ip address dhcp
-		no shutdown
+
 	(config)ip default-gateway IP
 
 ------------------------VLAN----------------------------------------------------
@@ -262,23 +285,35 @@ Router
 
 ---------------------------------
 
-DHCP
+------------------------DHCP----------------------------------------------------
 
-	#show ip dhcp [binding|pool _name|server statistics/
-		      /|conflict]
+----DHCP
+	#show ip dhcp [binding|pool|pool NAME|server statistics|conflict]
 	#show dhcp [server|lease]
 	#clear ip dhcp conflict
 
-	(config)ip dhcp pool _name
-		network net_ip/x
-		default-router dg_ip
-		dns-server dns_ip
-		ip dhcp excluded-address from_ip to_ip
-		lease X X X [infinite]
+	(config)ip dhcp pool NAME
+		network NET /X
+		ip dhcp excluded-address IP [IP]
+		domain-name NAME
+		dns-server IP
+		default-router IP
+		lease [X X X|infinite]
+
+		host IP
+		client-identifier NAME
+
 	(config-if)ip address dhcp
 
-	(config-if)ip dhcp client client_id ascii _name?
-	(config-if)ip helper-address dhcp_ip
+	(config-if)ip address dhcp client-id INT
+	(config-if)ip helper-address IP
+
+----SNOOPING
+	(config)ip dhcp snooping [database|information|verify|vlan X]
+
+	(config-if)ip dhcp snooping [information|limit|trust|vlan]
+
+----DHCPv6
 
 ------------------------------------------------------
 
@@ -335,8 +370,7 @@ DHCP
 	#clear ip ospf process [y]
 
 	#show ip route ospf
-	#show ip ospf [database|neighbour|interface/
-				   [brief|int_name]]
+	#show ip ospf [database|neighbour|interface [brief|int_name]]
 
 	(config)ip ospf hello X
 	(config)router ospf X
@@ -389,8 +423,7 @@ DHCP
 				           /net_mask
 
 ----EIGRPv6
-	#show ipv6 eigrp [route|interfaces[detail]/
-					/|int_name]
+	#show ipv6 eigrp [route|interfaces[detail]|int_name]
 	#show ipv6 eigrp topology
 
 	(config)ipv6 unicast-routing
@@ -402,6 +435,7 @@ DHCP
 	#show tcp brief
 	#show ip bgp summary
 	#show ip bgp neighbor [ip]
+
 	(config)router bgp X
 		neighbor neighbor_ip remote-as X
 		neighbor neighbor_ip update-source/
@@ -459,13 +493,20 @@ DHCP
 	(config-if)[no]ip access-group X [in|out]
 
 ----ACL_EXT
-	(config)access-list eX [p|d] prot_name from_net/
-	/wild_mask dest_net wild_mask [eq|gt|lt] prot_name
-	(config)ip access-list extended _name
-		[X][p|d] prot_name from_net wild_mask/
-				  /dest_net wild_mask
+	(config)access-list eX [p|d] PROT NET RMASK NET RMASK [eq|gt|lt] PROT
+
+	(config)ip access-list extended NAME
+		[X][p|d] PROT IP RMASK IP RMASK
 	(config)access-list extended X
 		no X
+
+----VACL
+	#show vlan access-map
+
+	(config)vlan access-map NAME
+		match ip address NAME
+		action [drop|forward]
+	(config)vlan filter NAME vlan-list X
 
 ----ACLv6
 	#show ipv6 access-list
@@ -475,17 +516,35 @@ DHCP
 		/host dest_ip [eq][port]
 	(config-if)ipv6 traffic-filter _name [in|out]
 
+------------------------Syslog--------------------------------------------------
+		#show logging
+
+		(config)logging IP
+		(config)logging [trap X|buffered X]
+
+		(config-if)[no]logging event
+
+		(config)service timestamps log [datetime]...
+
 ------------------------NTP-----------------------------------------------------
 
 	#show clock
-	#show ntp associations
+	#show ntp association [detalil]
 	#show ntp status
+
 	#clock set hh:mm:ss dd month yr
+
 	(config)ntp master [1-15]
-	(condif)ntp source [ip|loopback]
-	(config)ntp server server_ip [prefer] server2_ip
+	(condig)ntp source [ip|loopback]
+	(config)ntp server IP [prefer IP]
 	(config)ntp peer from_ip
 	(config-if)ntp broadcast [client]
+
+	(config)ntp authenticate
+	(config)ntp authentication-key X md5 PWD
+	(config)ntp trusted-key X
+
+	(config)ntp server IP key X
 
 ------------------------NAT-----------------------------------------------------
 
@@ -581,35 +640,63 @@ PPPoE
 		-
 ------------------------AAA-----------------------------------------------------
 
-	(config)aaa new model
-	(config)aaa authentication login default group/
-	/[radius|tacas+] local none
+	(config)aaa new-model
+	(config)aaa authentication login default group [radius|tacas+] local none
 	(config)aaa autorization ?
 
-
-Tacas+
+----Tacas+
 	(config)tacas server _name
 		key [X] _pwd
 		address [ipv4|ipv6] my_ip
 
-Radius
+----Radius
+	(config)aaa new-model
+	(config)radius-server host IP key X
+	(config)aaa authentication dot1x default group radius
+	(config)do1x system-auth-control
+	(config-if)dot1x port-control
 
 
-	(config)radius server _name
+	(config)radius server NAME
 		key _pwd
 		address my_ip
 
 ------------------------SPAN----------------------------------------------------
 
 	#show monitor
-	(config)monitor session X source vlan X both
-	(config)monitor sessions X destination/
-			    /interface int_name
+
+----LOCAL
+	(config)monitor session X [source|destination] [interface INT|vlan X]
+
+----RSPAN
+	(config-vlan)remote-span
+	(config)monitor session X [source|destination] [interface INT|vlan X]
+	(config)monitor session X source remote vlan X
+
+------------------------PrivateVLAN---------------------------------------------
+
+	#show vlan private-vlan
+	#show [interface] switchport | [begin INT]
+
+	(config)vtp mode transparent
+	(config)vlan X
+		private-vlan [association|community|isolated|primary]
+		private-vlan association X
+
+	(config-if)swichport mode private-vlan promiscuous
+	(config-if)switchport private-vlan /
+				[mapping|host-association|association] X X
+	(config)vtp mode transparent
 
 
 
 
 
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 
 

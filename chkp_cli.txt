@@ -301,16 +301,59 @@ fw ctl multik stat
         [Expert@MDS:0]# mdsstart_customer <IP Address or Name of
         Domain Management Server>
         [Expert@MDS:0]# mdsstat
+---------
 
+#fw ctl pstat
+#cphaprob igmp
+ migrate import---
+ --
+ ---
+show sysenv all
+show installer status build
 
+#cpwd_admin list
+#sim affinity -s
+#cpmq get/set
 
+#cpstat cpsead
+#cpinfo -y all
 
+#cphaprob stat
+#cphaprob -ia list
+#cphaprob -a if
 
+#fw tab -t connections
+#fw tab -t NAME
+#fw tab -s
 
+#fw ctl multik dynamic_dispatching on
+#fw ctl multik stat
 
+#ips pmstats reset
+#cpmq set|get
+#cphaconf set_ccp multicast
+#fw ctl affinity -l -a -v -r/larv
 
-
-
+#vpn tu tlist
+#cvpnrestart
+#api status
+#cpwd_admin list
+-=-=-=-=--=
+>fw ver
+>cpstat os
+>cpwd_admin list
+>cpstop|cpstart
+>fw stat
+>cpstat os -f ifconfig
+>fw getifs
+>show configuration interface
+#cat /etc/hosts
+#cp_conf sic state
+#cplic print
+#fw ctl pstat
+#cphaprob stat
+#cphaprob -a if
+#cphaprob -i list / #fw ctl iflist
 
 
 
