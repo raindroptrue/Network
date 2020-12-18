@@ -353,8 +353,9 @@ show installer status build
 #fw ctl pstat
 #cphaprob stat
 #cphaprob -a if
+3cphaprob -ia list
 #cphaprob -i list / #fw ctl iflist
 
 
 
-///
+///x
