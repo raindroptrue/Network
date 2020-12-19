@@ -402,25 +402,29 @@ cdp neighbors [detail]
 		router-id ipv4_format
 
 ----EIGRP
-	#show ip eigrp [neighbors|top|interface [detail]]
+	#show ip eigrp [neighbor|top|interface detail [INT]|traffic]
 	#show ip route eigrp
 	#show ip protocol
 
+	#debug eigrp packets
+
 	(config)router eigrp X
+		[no] auto-summary
 		[eigrp] router-id ip_format
-		network net_ip [wild_mask]
+		network NET [rMASK]
 		variance X
 		metric weights 0 1 0 1 0 0
 
-		[no]auto-summary
-		passive-interface [int_name|default]
+		redistribute connected
+		distance eigrp X X
+		[no]passive-interface [INT|default]
+
 
 	(config-if)no ip split-horizon eigrp X
 	(config-if)[delay|bandwidth] X
 	(config-if)ip [hello-interval|hold-time] eigrp X X
 
-	(config-if)ip summary-address egrip X net_ip/
-				           /net_mask
+	(config-if)ip summary-address egrip X NET MASK
 
 ----EIGRPv6
 	#show ipv6 eigrp [route|interfaces[detail]|int_name]
@@ -473,7 +477,6 @@ cdp neighbors [detail]
 	(config)track X interface INT [ip|line-protocol]
 	(config-if)glbp X weighting track X [decrement X]
 	(config-if)glbp X weighting X lower X upper X
-
 
 ------------------------ACL-----------------------------------------------------
 
