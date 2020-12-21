@@ -100,7 +100,7 @@ cdp neighbors [detail]
 
 	#show power inline [INT]
 
-	(config-if)power inline {auto max X|consumption X|static X|never}
+	(config-if)power inline [auto max X|consumption X|static X|never]
 
 ------------------------SECURITY------------------------------------------------
 
@@ -108,7 +108,7 @@ cdp neighbors [detail]
 	(config)service password-encryption
 	(config)enable secret PWD
 	(config)enable password PWD
-	(config)user NAME password PWD
+	(config)user NAME [privilege X] password PWD
 	(config)line [con 0|vty 0 15]
 		privilege level [0-15]
 		login [local]
@@ -144,10 +144,33 @@ cdp neighbors [detail]
 		crypto key generate rsa modulus XXX
 		crypto key zeroize rsa
 	(config)ip ssh version 2
-	(config)username NAME secret PWD
+	(config)username NAME [privilege X]secret PWD
 	(config)line vty 0 15
 		login local
 		transport input [ssh|telnet|all|none]
+
+----VPN
+	#show crypto isakmp [policy|sa]
+	#show crypto ipsec sa
+
+	#debug crypto ipsec
+
+	(config)crypto isakmp enable
+	(config)crypto isakmp policy X
+		authentication pre-share
+		encryption [des|3des|aes]
+		hash [md5|sha]
+		lifetime X
+	(config)crypto isakmp key X PWD address IP
+	(config)crypto ipsec transform-set NAME ah-md5-hmac
+		mode [tunnel|transport]
+	(config)crypto ipsec security-association lifetime seconds X
+
+	(config)crypto map NAME X ipsec-isakmp
+		match address X
+		set peer IP
+		set transform-set name
+	(config-if)crypto map NAME
 
 ------------------------SVI-----------------------------------------------------
 
@@ -366,51 +389,75 @@ cdp neighbors [detail]
 
 	(config-if)[no]ip split-horiozn
 
+----RIPng
+	#show ipv6 rip
+	#show ipv6 route rip
+
+
+	(config-if)ipv6 rip NAME enable
+	(config-if)ipv6 rip NAME enable [default-information [only|originate]]
+
 ----OSPF
+	#show ip route ospf
+	#show ip ospf [neighbor|interface [brief|INT]|virtual-links]
+	#show ip ospf [border-routers|database]
+
 	#clear ip ospf process [y]
 
-	#show ip route ospf
-	#show ip ospf [database|neighbour|interface [brief|int_name]]
-
-	(config)ip ospf hello X
 	(config)router ospf X
-		router-id ip_format
-		network my_net wild_mask area X
-		neighbor from_ip
+		router-id RID
+		network NET rMASK area X
+		neighbor IP
 
-		area X virtual-link router_id
-		area X stub no-summary
+		area X virtual-link RID
+		area X stub [no-summary]
+		area X nssa [no-summary]
+
+		area X range NET MASK
+		summary-address NET MASK
+
 		redistribute connected subnets
-		passive-interface int_name [default]
+		redistribute connected metric-type X
+		passive-interface INT [default]
 
 		auto-cost reference-bandwidth X
 		maximum-paths X
 
+	(config)ip ospf hello X
+
 	(config-if)ip ospf [priority X|cost X|bandwidth X]
 
+	(config-if)ip ospf authentication
+	(config-if)ip ospf authentication-key NAME
+
 ----OSPFv3
-	#show ipv6 ospf [interface[brief]|neighbor]
+	#show ipv6 ospf [neighbor [detail]|interface[brief]]
+	#show ipv6 ospf [border-router|virtual-link]
 	#show ipv6 protocols
 	#show ipv6 route [ospf]
 
-	(config)ipv6 router ospf X
-
 	(config)ipv6 unicast-routing
+	(config)ipv6 router ospf X
+		router-id RID
+		redistribute connected
+		area X stub [no-summary]
+		area X virtual-link RID
+
 	(config-if)ipv6 enable
-	(config-if)ipv6 address my_ipv6
+	(config-if)ipv6 address IPv6
 	(config-if)ipv6 ospf X area X
-		router-id ipv4_format
+
 
 ----EIGRP
-	#show ip eigrp [neighbor|top|interface detail [INT]|traffic]
 	#show ip route eigrp
+	#show ip eigrp [neighbor|top|interface detail [INT]|traffic]
 	#show ip protocol
 
 	#debug eigrp packets
 
 	(config)router eigrp X
 		[no] auto-summary
-		[eigrp] router-id ip_format
+		router-id RID
 		network NET [rMASK]
 		variance X
 		metric weights 0 1 0 1 0 0
@@ -419,20 +466,25 @@ cdp neighbors [detail]
 		distance eigrp X X
 		[no]passive-interface [INT|default]
 
-
 	(config-if)no ip split-horizon eigrp X
 	(config-if)[delay|bandwidth] X
 	(config-if)ip [hello-interval|hold-time] eigrp X X
 
 	(config-if)ip summary-address egrip X NET MASK
 
+	(config-if)ip authentication mode eigrp X md5
+	(config-if)ip authentication key-chain eigrp X NAME
+
 ----EIGRPv6
-	#show ipv6 eigrp [route|interfaces[detail]|int_name]
+	#show ipv6 eigrp [neighbor|interfaces[detail]|INT]
+	#show ipv6 route eigrp
 	#show ipv6 eigrp topology
 
 	(config)ipv6 unicast-routing
 	(config)ipv6 router eigrp X
-		eigrp router-id ipv4_format
+		router-id RID
+		default-metric X X X X X
+		redistribute connected
 	(config-if)ipv6 eigrp X
 
 ----BGP
@@ -445,6 +497,15 @@ cdp neighbors [detail]
 		neighbor neighbor_ip update-source/
 				      /[loopback 0]
 		network net_ip mask net_mask
+
+------------------------VRF-----------------------------------------------------
+
+	#show ip vrf
+	#show ip route vrf NAME
+
+	(config)ip vrf NAME
+		interface INT
+			ip vrf forwarding NAME
 
 ------------------------FHRP----------------------------------------------------
 
@@ -481,25 +542,26 @@ cdp neighbors [detail]
 ------------------------ACL-----------------------------------------------------
 
 ----ACL_STD
-	#show access-list [X|_name]
-	#show ip access-list [X|_name]
+	#show access-list [X|NAME]
+	#show ip access-list [X|NAME]
+	#show ip interface INT
 	#sh  int | sh ru
 
-	(config)access-list X [p|d] from_net wild_mask
-	(config)access-list X [p|d] host from_ip
+	(config)access-list X [p|d] NET rMASK
+	(config)access-list X [p|d] host IP
 	(config)no access-list X
-	(config)access-list X remark _txt
+	(config)access-list X remark TXT
 
-	(config)ip access-list standard _name
-		[p|d]from_ip wild_mask
+	(config)ip access-list standard NAME
+		[p|d]IP rMASK
 
 	(config-if)[no]ip access-group X [in|out]
 
 ----ACL_EXT
-	(config)access-list eX [p|d] PROT NET RMASK NET RMASK [eq|gt|lt] PROT
+	(config)access-list eX [p|d] PROT NET rMASK NET rMASK [eq|gt|lt] PROT
 
 	(config)ip access-list extended NAME
-		[X][p|d] PROT IP RMASK IP RMASK
+		[X][p|d] PROT IP rMASK IP rMASK
 	(config)access-list extended X
 		no X
 
@@ -513,11 +575,10 @@ cdp neighbors [detail]
 
 ----ACLv6
 	#show ipv6 access-list
-	(config)ipv6 access-list _name
-		[p|d] from_ipv6 dest_ipv6
-		[sequence X][p|d] prot_name host from_ip/
-		/host dest_ip [eq][port]
-	(config-if)ipv6 traffic-filter _name [in|out]
+	(config)ipv6 access-list NAME
+		[p|d] IPv6 IPv6
+		[sequence X][p|d] PROT host IPv6 host IPv6 [eq][port]
+	(config-if)ipv6 traffic-filter NAME [in|out]
 
 ------------------------Syslog--------------------------------------------------
 		#show logging
@@ -532,7 +593,7 @@ cdp neighbors [detail]
 ------------------------NTP-----------------------------------------------------
 
 	#show clock
-	#show ntp association [detalil]
+	#show ntp association [detail]
 	#show ntp status
 
 	#clock set hh:mm:ss dd month yr
@@ -542,12 +603,15 @@ cdp neighbors [detail]
 	(config)ntp master [1-15]
 	(condig)ntp source [ip|loopback]
 	(config)ntp server IP [prefer IP]
-	(config)ntp peer from_ip
+	(config)ntp peer IP
+
 	(config-if)ntp broadcast [client]
 
 	(config)ntp authenticate
 	(config)ntp authentication-key X md5 PWD
 	(config)ntp trusted-key X
+
+	(config)ntp access-group serve X
 
 	(config)ntp server IP key X
 
