@@ -6,6 +6,7 @@
 	#dir
 	#delate flash:vlan.dat
 
+	#show debug
 	debug ip packet
 	u all
 
@@ -71,24 +72,21 @@ Router
 		   clock rate rate-in-bps
 
 ------------------------DiscoveryProtocol---------------------------------------
+
 ----CDP
 	#show cdp [neighbor [detail]]
 
 	(config)[no]cdp run
 	(config-if)[no]cdp enable
 
-
 ----LLDP
+	#show lldp neighbor
 
+	(config)[no] lldp run
 
 ------
 cdp entry NAME
 cdp neighbors [detail]
-(config)[no] cdp run
-(config-if)no cdp enable
-
-#show lldp neighbor
-(config)[no] lldp run
 
 ------------------------StormControl--------------------------------------------
 
@@ -331,13 +329,15 @@ cdp neighbors [detail]
 	(config-if)ip address dhcp client-id INT
 	(config-if)ip helper-address IP
 
+	(config)ip forward-protocol udp X
+
 ----SNOOPING
 	(config)ip dhcp snooping [database|information|verify|vlan X]
 
 	(config-if)ip dhcp snooping [information|limit|trust|vlan]
 
 ----DHCPv6
-
+	-
 ------------------------------------------------------
 
 		domain-name zzzz
@@ -352,6 +352,8 @@ cdp neighbors [detail]
 	#show ip bgp/? neighbor
 
 	#show ip cef
+	#show adjacency [detail]
+
 	#show ip route [ |connected|_ip|static]
 	#show ip protocols
 	#show ip interface brief
@@ -392,7 +394,6 @@ cdp neighbors [detail]
 ----RIPng
 	#show ipv6 rip
 	#show ipv6 route rip
-
 
 	(config-if)ipv6 rip NAME enable
 	(config-if)ipv6 rip NAME enable [default-information [only|originate]]
@@ -489,14 +490,33 @@ cdp neighbors [detail]
 
 ----BGP
 	#show tcp brief
-	#show ip bgp summary
+	#show ip bgp [summary|IP]
 	#show ip bgp neighbor [ip]
 
+	#clear ip bgp * soft [in|out]
+
 	(config)router bgp X
-		neighbor neighbor_ip remote-as X
-		neighbor neighbor_ip update-source/
-				      /[loopback 0]
-		network net_ip mask net_mask
+		neighbor IP remote-as X
+		neighbor IP ebgp-multihop X
+		neighbor IP update-source [loopbackX]
+		neighbor IP next-hop-self
+		neighbor IP weight X
+		neighbor IP route-reflector-client
+		neighbor IP prefix-list NAME [in|out]
+
+		network NET mask MASK
+		aggregate-address NET MASK [summary-only]
+
+		bgp default local-preference X
+
+	(config)route-map NAME permit X
+		match ip address X
+		set metric X
+		set local-pref X
+	(config)router bgp X
+		neighbor IP route-map NAME [in|out]
+
+	(config)ip prefix-list NAME [deny|permit] [NET/X|0.0.0.0/0 le 32]
 
 ------------------------VRF-----------------------------------------------------
 
@@ -575,6 +595,7 @@ cdp neighbors [detail]
 
 ----ACLv6
 	#show ipv6 access-list
+
 	(config)ipv6 access-list NAME
 		[p|d] IPv6 IPv6
 		[sequence X][p|d] PROT host IPv6 host IPv6 [eq][port]
@@ -623,25 +644,22 @@ cdp neighbors [detail]
 
 	(config-if)ip nat [inside|outside]
 
-----NAT - Static
+----SNAT
+	(config)ip nat inside source static IP IP
 
-	(config)ip nat inside source static int_ip glop_ip
+----DNAT
+	(config)access-list X permit NET rMASK
+	(config)ip nat pool NAME IP IP netmask MASK
+	(config)ip nat inside source list X pool NAME
 
-----NAT - Dynamic
-
-	(config)access-list X permint net_ip wild_mask
-	(config)ip nat pool _name start_ip end_ip/
-		                /netmask net_mask
-	(config)ip nat inside source list acl_list/
-			           /pool pool_name
 ----PAT
-	(config)ip nat inside source list acl_list/
-		   /interface int_out_name overload
+	(config)ip nat inside source list X interface INT overload
 
 ------------------------IPv6----------------------------------------------------
 
 	#show ipv6 interface [brief]
 	#show ipv6 route
+
 	(config)ipv6 unicast-routing
 	(config-if)ipv6 address netv6/64
 	(config-if)ipv6 address netv6/64 eui-64
@@ -655,18 +673,16 @@ cdp neighbors [detail]
 	#show controller int_serial
 	(config-if)clock rate
 
-PAP
-
+----PAP
 	(config-if)encapsulation ppp
 	(config-if)ppp authentication pap
 	(config-if)ppp pap sent-username _name password _pwd
 
-CHAP
+----CHAP
 	(config-if)encapsulation ppp
 	(config-if)ppp authentication chap
 
-Multilink
-
+----Multilink
 	(config-if)no ip address
 	(config-if)encapsulation ppp
 	(config-if)ppp multilink
@@ -678,8 +694,7 @@ Multilink
 		ppp multilink
 		ppp multilink group 1
 
-GRE
-
+----GRE
 	(config)interface tunnel X
 	(config-if)ip address gre_ip gre_mask
 	(config-if)tunnel source [my_ip|int_name]
@@ -687,10 +702,8 @@ GRE
 
 	(config-if)tunnel mode gre ipv6
 
-
-PPPoE
-
-	#shoe pppoe sesion
+----PPPoE
+	#show pppoe sesion
 	#show ip interface [brief] dialer X
 	(config-if)no ip address
 		pppoe enable group global
@@ -706,7 +719,7 @@ PPPoE
 		-
 		-
 		-
-		-
+
 ------------------------AAA-----------------------------------------------------
 
 	(config)aaa new-model
@@ -766,16 +779,29 @@ PPPoE
 			[des|3des|aes] X PWD
 	(config)snmp-server host IP trap v 3 priv NAME
 
+------------------------RPF-----------------------------------------------------
+
+	#show ip [cef|traffic]
+	#show cef interface INT
+	#show ip interface INT | include verification
+
+	(config-if)ip verify unicast source reachable-via [any|rx]
+
 ------------------------SLA-----------------------------------------------------
 
-	#show ip sla [stat|config]
+	#show ip sla [statistics|config]
+	#show track
 
 	(config)ip sla responder
 
 	(config)ip sla X
 		icmp-echo IP
-		 	frequency 30
-	(config)ip sla schedule X start-time now
+		 	frequency X
+	(config)ip sla schedule X life forever start-time now
+
+	(config)track X ip sla X [reachability|state]
+	(config)ip route IP MASK IP track X
+
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
