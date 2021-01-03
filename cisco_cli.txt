@@ -400,7 +400,7 @@ cdp neighbors [detail]
 
 ----OSPF
 	#show ip route ospf
-	#show ip ospf [neighbor|interface [brief|INT]|virtual-links]
+	#show ip ospf [neighbor|interface[brief|INT]|virtual-links]
 	#show ip ospf [border-routers|database]
 
 	#clear ip ospf process [y]
@@ -419,13 +419,17 @@ cdp neighbors [detail]
 
 		redistribute connected subnets
 		redistribute connected metric-type X
-		passive-interface INT [default]
+		passive-interface [INT|default]
 
 		auto-cost reference-bandwidth X
 		maximum-paths X
 
-	(config)ip ospf hello X
+		default-information originate [always]
 
+	(config)ip ospf hello X
+	(config-if)ip ospf hello X
+
+	(config-if)ip ospf X area X
 	(config-if)ip ospf [priority X|cost X|bandwidth X]
 
 	(config-if)ip ospf authentication
@@ -451,7 +455,7 @@ cdp neighbors [detail]
 
 ----EIGRP
 	#show ip route eigrp
-	#show ip eigrp [neighbor|top|interface detail [INT]|traffic]
+	#show ip eigrp [neighbor|topology [all-links]|interface detail [INT]|traffic]
 	#show ip protocol
 
 	#debug eigrp packets
@@ -471,13 +475,13 @@ cdp neighbors [detail]
 	(config-if)[delay|bandwidth] X
 	(config-if)ip [hello-interval|hold-time] eigrp X X
 
-	(config-if)ip summary-address egrip X NET MASK
+	(config-if)ip summary-address eigrp X NET MASK
 
 	(config-if)ip authentication mode eigrp X md5
 	(config-if)ip authentication key-chain eigrp X NAME
 
 ----EIGRPv6
-	#show ipv6 eigrp [neighbor|interfaces[detail]|INT]
+	#show ipv6 eigrp [neighbor|topology [all-links]|interfaces[detail]|INT]
 	#show ipv6 route eigrp
 	#show ipv6 eigrp topology
 
@@ -543,19 +547,21 @@ cdp neighbors [detail]
 ----VRRP
 	#show vrrp [brief]
 
+	(config)track X interface INT [ip|line-protocol]
+
 	(config-if)vrrp X ip IP
 	(config-if)vrrp X priority X
-	(config)track X interface INT [ip|line-protocol]
 	(config-if)vrrp X track X [decrement X]
 
 ----GLBP
 	#show glbp [brief]
 	#show glbp | begin Forwarder 1
 
+	(config)track X interface INT [ip|line-protocol]
+
 	(config-if)glbp X ip IP
 	(config-if)glbp X priority X
 	(config-if)glbp X timers [X X|redirect X X]
-	(config)track X interface INT [ip|line-protocol]
 	(config-if)glbp X weighting track X [decrement X]
 	(config-if)glbp X weighting X lower X upper X
 
@@ -606,10 +612,9 @@ cdp neighbors [detail]
 
 		(config)logging IP
 		(config)logging [trap X|buffered X]
+		(config)service timestamps log [datetime]...
 
 		(config-if)[no]logging event
-
-		(config)service timestamps log [datetime]...
 
 ------------------------NTP-----------------------------------------------------
 
@@ -676,7 +681,7 @@ cdp neighbors [detail]
 ----PAP
 	(config-if)encapsulation ppp
 	(config-if)ppp authentication pap
-	(config-if)ppp pap sent-username _name password _pwd
+	(config-if)ppp pap sent-username NAME password PWD
 
 ----CHAP
 	(config-if)encapsulation ppp
@@ -689,21 +694,21 @@ cdp neighbors [detail]
 	(config-if)ppp multilink group X
 
 	(config)interface multilink X
-		ip address link_ip link_mask
+		ip address IP MASK
 		encapsulation ppp
 		ppp multilink
 		ppp multilink group 1
 
 ----GRE
 	(config)interface tunnel X
-	(config-if)ip address gre_ip gre_mask
-	(config-if)tunnel source [my_ip|int_name]
-	(config-if)tunnel destiation [dest_ip|int_name]
+	(config-if)ip address IP MASK
+	(config-if)tunnel source [IP|INT]
+	(config-if)tunnel destiation [IP|INT]
 
 	(config-if)tunnel mode gre ipv6
 
 ----PPPoE
-	#show pppoe sesion
+	#show pppoe session
 	#show ip interface [brief] dialer X
 	(config-if)no ip address
 		pppoe enable group global
