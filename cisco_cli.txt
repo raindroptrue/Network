@@ -219,6 +219,8 @@ cdp neighbors [detail]
 		vtp version [1|2|3]
 
 ----ROAS
+	#show interface INT.VLANID
+
 	(config)interface INT.VLANID
 		encapsulation [dot1q|isl] VLANID [native]
 		ip address IP MASK
@@ -288,23 +290,22 @@ cdp neighbors [detail]
 	(config)spanning-tree etherchannel guard misconfig
 
 	#show etherchannel load-balance
+
 	(config)port-channel load-balance ...
 
 ------------------------L3Switch------------------------------------------------
 
+	#show ip route
+
+	(config)ip routing
 
 	(config)interface vlan X
 		ip address IP MASK
 		no shutdown
 	(config)interface INT
 		no switchport
-		ip addres IP MASK
+		ip address IP MASK
 		no shutdown
-
-	#show ip route
-	(config)ip routomg
-
----------------------------------
 
 ------------------------DHCP----------------------------------------------------
 
@@ -454,7 +455,7 @@ cdp neighbors [detail]
 
 
 ----EIGRP
-	#show ip route eigrp
+	#show ip route [eigrp|NET [MASK]]
 	#show ip eigrp [neighbor|topology [all-links]|interface detail [INT]|traffic]
 	#show ip protocol
 
@@ -462,14 +463,14 @@ cdp neighbors [detail]
 
 	(config)router eigrp X
 		[no] auto-summary
-		router-id RID
+		[eigrp]router-id RID
 		network NET [rMASK]
 		variance X
 		metric weights 0 1 0 1 0 0
 
 		redistribute connected
 		distance eigrp X X
-		[no]passive-interface [INT|default]
+		passive-interface [INT|default]
 
 	(config-if)no ip split-horizon eigrp X
 	(config-if)[delay|bandwidth] X
@@ -675,7 +676,7 @@ cdp neighbors [detail]
 
 ------------------------PPP-----------------------------------------------------
 
-	#show controller int_serial
+	#show controller INT
 	(config-if)clock rate
 
 ----PAP
@@ -709,21 +710,20 @@ cdp neighbors [detail]
 
 ----PPPoE
 	#show pppoe session
-	#show ip interface [brief] dialer X
+	#show ip interface [brief] dialerX
+	#show interface dialerX
+
 	(config-if)no ip address
 		pppoe enable group global
 		pppoe-client dial-pool-number X
 
-	interface DialerX
+	interface dialerX
 		mtu 1492
 		ip address negotiated
 		encapsulation ppp
 		dialer pool X
-		ppp chap hostname X
-		ppp chap password 0 zzzz
-		-
-		-
-		-
+		ppp chap hostname Name
+		ppp chap password PWD
 
 ------------------------AAA-----------------------------------------------------
 
