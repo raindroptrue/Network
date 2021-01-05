@@ -59,13 +59,13 @@
 	#[no]logging monitor|console
 	#terminal monitor
 
-Interfaces configuration
+	Interfaces configuration
 
 	(config-if)duplex [auto|full|half]
 	           speed [auto|10|100|1000]
 	           description NAME
 
-Router
+	Router
 	#show controller ?
 
 	(config-if)bandwidth rate-in-kbps
@@ -73,20 +73,20 @@ Router
 
 ------------------------DiscoveryProtocol---------------------------------------
 
-----CDP
+	CDP
 	#show cdp [neighbor [detail]]
 
 	(config)[no]cdp run
 	(config-if)[no]cdp enable
 
-----LLDP
+	LLDP
 	#show lldp neighbor
 
 	(config)[no] lldp run
 
-------
-cdp entry NAME
-cdp neighbors [detail]
+	------
+	cdp entry NAME
+	cdp neighbors [detail]
 
 ------------------------StormControl--------------------------------------------
 
@@ -102,7 +102,7 @@ cdp neighbors [detail]
 
 ------------------------SECURITY------------------------------------------------
 
-----PASSWORD
+	PASSWORD
 	(config)service password-encryption
 	(config)enable secret PWD
 	(config)enable password PWD
@@ -112,12 +112,12 @@ cdp neighbors [detail]
 		login [local]
 		password PWD
 
-----KEY_CHAIN
+	KEY_CHAIN
 	(config)key chain NAME
 		key X
 		key-string X
 
-----SWITCHPORT
+	SWITCHPORT
 	#show port-security [interface INT|address]
 	#show errdisable recovery
 
@@ -133,21 +133,21 @@ cdp neighbors [detail]
 	#show errdisable recovery
 	(config)errdisable recovery [cause ...|interval]
 
-----SSH
+	SSH
 	#show ip ssh
 	#show ssh
 
 	(config)hostname NAME
 	(config)ip domain-name NAME
-		crypto key generate rsa modulus XXX
+		crypto key generate rsa modulus 768
 		crypto key zeroize rsa
 	(config)ip ssh version 2
-	(config)username NAME [privilege X]secret PWD
+	(config)username NAME [privilege X] secret PWD
 	(config)line vty 0 15
 		login local
 		transport input [ssh|telnet|all|none]
 
-----VPN
+	VPN
 	#show crypto isakmp [policy|sa]
 	#show crypto ipsec sa
 
@@ -187,13 +187,13 @@ cdp neighbors [detail]
 	(config)vlan X
 		name NAME
 
-----Access
+	Access
 	(config)interfaces INT
 		switchport mode access
 		switchport access vlan <1-4094>
 		switchport voice vlan X
 
-----Trunk
+	Trunk
 	#show interface trunk
 	#show interface INT switchport
 	#show interface [INT] trunk
@@ -203,13 +203,13 @@ cdp neighbors [detail]
 	(config-if)switchport trunk allowed vlan {add|all|except|remove] VLAN_LIST
 	(config-if)switchport trunk native vlan X
 
-----DTP
+	DTP
 	#show dtp [interface]
 	#show [interface] switchport | [begin INT]
 
 	(config-if)switchport nonegotiate
 
-----VTP
+	VTP
 	#show vtp [status|password]
 
 	(config)vtp mode [server|client|transparent|off]
@@ -218,7 +218,7 @@ cdp neighbors [detail]
 		vtp pruning
 		vtp version [1|2|3]
 
-----ROAS
+	ROAS
 	#show interface INT.VLANID
 
 	(config)interface INT.VLANID
@@ -229,7 +229,7 @@ cdp neighbors [detail]
 
 	(config-if)switchport host
 
-----STP
+	STP
 	#show spanning-tree [root|summary]
 	#show spanning-tree [vlan X|INT|state|detail]
 	#show spanning-tree vlan X [root|bridge]
@@ -244,19 +244,19 @@ cdp neighbors [detail]
 	(config-if)spanning-tree vlan X port-priority X
 	(config-if)spanning-tree vlan X cost X
 
-----xxxFAST
+	xxxFAST
 	(config)spanning-tree uplinkfast [max-update-rate]
 
 	#show spanning-tree backbonefast
 	(config)spanning-tree backbonefast
 
-----PORTFAST
+	PORTFAST
 	#show spanning-tree interface INT portfast
 
 	(config)spanning-tree portfast default
 	(config-if)spanning-tree portfast [disable]
 
-----GUARD
+	GUARD
 	#show spanning inconsistentports
 	(config-if)spanning-tree guard root
 
@@ -270,14 +270,14 @@ cdp neighbors [detail]
 	(config)[no]spanning-tree loopguard default
 	(config-if)spanning-tree guard [loop|none]
 
-----UDLD
+	UDLD
 	(config)udld [aggressive|enable]
 	(config-if)udld port [aggressive]
 
-----RSTP
+	RSTP
 	(config)spanning-tree mode [rapid-pvst|pvst|mst]
 
-----MST
+	MST
 	(config-mst)show pending
 
 ------------------------EtherChannel--------------------------------------------
@@ -309,7 +309,7 @@ cdp neighbors [detail]
 
 ------------------------DHCP----------------------------------------------------
 
-----DHCP
+	DHCP
 	#show ip dhcp [binding|pool|pool NAME|server statistics|conflict]
 	#show dhcp [server|lease]
 	#clear ip dhcp conflict
@@ -332,21 +332,22 @@ cdp neighbors [detail]
 
 	(config)ip forward-protocol udp X
 
-----SNOOPING
+	SNOOPING
 	(config)ip dhcp snooping [database|information|verify|vlan X]
 
 	(config-if)ip dhcp snooping [information|limit|trust|vlan]
 
-----DHCPv6
+	DHCPv6
 	-
-------------------------------------------------------
+	------------------------------------------------------
 
 		domain-name zzzz
 		next-server zzz.zzz.zzz.zzz
 
 ------------------------ROUTING-------------------------------------------------
 
-----STATIC
+
+	STATIC
 	(config)no ip route
 	(config)ip default-gateway gw_ip
 
@@ -363,7 +364,7 @@ cdp neighbors [detail]
 
 	(config)ip route 0.0.0.0 0.0.0.0 [int|dest_ip]
 
-----STATICv6
+	STATICv6
 	#show ipv6 interface [brief]
 	#show ipv6 route [connected|static|local]
 	#show ipv6 neighbors
@@ -377,32 +378,32 @@ cdp neighbors [detail]
 
 	(config-if)ipv6 dhcp relay destination _ip
 
-----RIPv2
+	RIPv2
 	#show ip route [rip]
 	#show ip rip database
-	(config)ip route dest_net dest_mask via_ip [X]
+	(config)ip route NET MASK IP [X]
 	(config)router rip
 		version 2
 		[no]auto-summary
-		network net_ip
-		passive-interface [int_name/default]
+		network NET MASK
+		passive-interface [INT|default]
 		maximum-path X
 
    		default-information originate
 
-	(config-if)[no]ip split-horiozn
+	(config-if)[no]ip split-horizon
 
-----RIPng
+	RIPng
 	#show ipv6 rip
 	#show ipv6 route rip
 
 	(config-if)ipv6 rip NAME enable
 	(config-if)ipv6 rip NAME enable [default-information [only|originate]]
 
-----OSPF
+	OSPF
 	#show ip route ospf
-	#show ip ospf [neighbor|interface[brief|INT]|virtual-links]
-	#show ip ospf [border-routers|database]
+	#show ip ospf neighbor|interface[brief|INT]
+	#show ip ospf border-routers|database|virtual-links
 
 	#clear ip ospf process [y]
 
@@ -418,27 +419,32 @@ cdp neighbors [detail]
 		area X range NET MASK
 		summary-address NET MASK
 
-		redistribute connected subnets
-		redistribute connected metric-type X
-		passive-interface [INT|default]
+		redistribute connected [subnets [metric-type X]]
+		passive-interface INT|default
 
 		auto-cost reference-bandwidth X
 		maximum-paths X
 
 		default-information originate [always]
 
+		distribute-list X in|out X
+
 	(config)ip ospf hello X
 	(config-if)ip ospf hello X
 
 	(config-if)ip ospf X area X
-	(config-if)ip ospf [priority X|cost X|bandwidth X]
+	(config-if)ip ospf priority X|cost X
+	(config-if)bandwidth X
 
 	(config-if)ip ospf authentication
 	(config-if)ip ospf authentication-key NAME
 
-----OSPFv3
-	#show ipv6 ospf [neighbor [detail]|interface[brief]]
-	#show ipv6 ospf [border-router|virtual-link]
+	(config-router)area X authentication message-digest
+	(config-if)ip ospf message-digest-key 1 md5 PWD
+
+	OSPFv3
+	#show ipv6 ospf neighbor [detail]|interface[brief]
+	#show ipv6 ospf border-router|virtual-link
 	#show ipv6 protocols
 	#show ipv6 route [ospf]
 
@@ -454,9 +460,9 @@ cdp neighbors [detail]
 	(config-if)ipv6 ospf X area X
 
 
-----EIGRP
-	#show ip route [eigrp|NET [MASK]]
-	#show ip eigrp [neighbor|topology [all-links]|interface detail [INT]|traffic]
+	EIGRP
+	#show ip route eigrp|NET [MASK]
+	#show ip eigrp neighbor|topology [all-links]|interface detail [INT]|traffic
 	#show ip protocol
 
 	#debug eigrp packets
@@ -468,21 +474,23 @@ cdp neighbors [detail]
 		variance X
 		metric weights 0 1 0 1 0 0
 
-		redistribute connected
+		redistribute connected|static metric X X X X X
 		distance eigrp X X
-		passive-interface [INT|default]
+		passive-interface INT|default
+
+	(config)ip default-network IP MASK
 
 	(config-if)no ip split-horizon eigrp X
-	(config-if)[delay|bandwidth] X
-	(config-if)ip [hello-interval|hold-time] eigrp X X
+	(config-if)delay|bandwidth X
+	(config-if)ip hello-interval|hold-time eigrp X X
 
 	(config-if)ip summary-address eigrp X NET MASK
 
 	(config-if)ip authentication mode eigrp X md5
 	(config-if)ip authentication key-chain eigrp X NAME
 
-----EIGRPv6
-	#show ipv6 eigrp [neighbor|topology [all-links]|interfaces[detail]|INT]
+	EIGRPv6
+	#show ipv6 eigrp neighbor|topology [all-links]|interfaces[detail]|INT
 	#show ipv6 route eigrp
 	#show ipv6 eigrp topology
 
@@ -493,12 +501,12 @@ cdp neighbors [detail]
 		redistribute connected
 	(config-if)ipv6 eigrp X
 
-----BGP
+	BGP
 	#show tcp brief
-	#show ip bgp [summary|IP]
+	#show ip bgp summary|IP
 	#show ip bgp neighbor [ip]
 
-	#clear ip bgp * soft [in|out]
+	#clear ip bgp * soft in|out
 
 	(config)router bgp X
 		neighbor IP remote-as X
@@ -507,7 +515,7 @@ cdp neighbors [detail]
 		neighbor IP next-hop-self
 		neighbor IP weight X
 		neighbor IP route-reflector-client
-		neighbor IP prefix-list NAME [in|out]
+		neighbor IP prefix-list NAME in|out
 
 		network NET mask MASK
 		aggregate-address NET MASK [summary-only]
@@ -519,9 +527,9 @@ cdp neighbors [detail]
 		set metric X
 		set local-pref X
 	(config)router bgp X
-		neighbor IP route-map NAME [in|out]
+		neighbor IP route-map NAME in|out
 
-	(config)ip prefix-list NAME [deny|permit] [NET/X|0.0.0.0/0 le 32]
+	(config)ip prefix-list NAME d|p NET/X|0.0.0.0/0 le 32
 
 ------------------------VRF-----------------------------------------------------
 
@@ -534,7 +542,7 @@ cdp neighbors [detail]
 
 ------------------------FHRP----------------------------------------------------
 
-----HSRP
+	HSRP
 	#show standby [brief]
 
 	(config-if)standby X ip IP
@@ -545,7 +553,7 @@ cdp neighbors [detail]
 	(config-if)standby X authentication md5 [key-string|key-chain] X
 	(config-if)standby version <1-2>
 
-----VRRP
+	VRRP
 	#show vrrp [brief]
 
 	(config)track X interface INT [ip|line-protocol]
@@ -554,7 +562,7 @@ cdp neighbors [detail]
 	(config-if)vrrp X priority X
 	(config-if)vrrp X track X [decrement X]
 
-----GLBP
+	GLBP
 	#show glbp [brief]
 	#show glbp | begin Forwarder 1
 
@@ -568,7 +576,7 @@ cdp neighbors [detail]
 
 ------------------------ACL-----------------------------------------------------
 
-----ACL_STD
+	ACL_STD
 	#show access-list [X|NAME]
 	#show ip access-list [X|NAME]
 	#show ip interface INT
@@ -584,7 +592,7 @@ cdp neighbors [detail]
 
 	(config-if)[no]ip access-group X [in|out]
 
-----ACL_EXT
+	ACL_EXT
 	(config)access-list eX [p|d] PROT NET rMASK NET rMASK [eq|gt|lt] PROT
 
 	(config)ip access-list extended NAME
@@ -592,7 +600,7 @@ cdp neighbors [detail]
 	(config)access-list extended X
 		no X
 
-----VACL
+	VACL
 	#show vlan access-map
 
 	(config)vlan access-map NAME
@@ -600,7 +608,7 @@ cdp neighbors [detail]
 		action [drop|forward]
 	(config)vlan filter NAME vlan-list X
 
-----ACLv6
+	ACLv6
 	#show ipv6 access-list
 
 	(config)ipv6 access-list NAME
@@ -650,15 +658,15 @@ cdp neighbors [detail]
 
 	(config-if)ip nat [inside|outside]
 
-----SNAT
+	SNAT
 	(config)ip nat inside source static IP IP
 
-----DNAT
+	DNAT
 	(config)access-list X permit NET rMASK
 	(config)ip nat pool NAME IP IP netmask MASK
 	(config)ip nat inside source list X pool NAME
 
-----PAT
+	PAT
 	(config)ip nat inside source list X interface INT overload
 
 ------------------------IPv6----------------------------------------------------
@@ -679,16 +687,16 @@ cdp neighbors [detail]
 	#show controller INT
 	(config-if)clock rate
 
-----PAP
+	PAP
 	(config-if)encapsulation ppp
 	(config-if)ppp authentication pap
 	(config-if)ppp pap sent-username NAME password PWD
 
-----CHAP
+	CHAP
 	(config-if)encapsulation ppp
 	(config-if)ppp authentication chap
 
-----Multilink
+	Multilink
 	(config-if)no ip address
 	(config-if)encapsulation ppp
 	(config-if)ppp multilink
@@ -700,7 +708,7 @@ cdp neighbors [detail]
 		ppp multilink
 		ppp multilink group 1
 
-----GRE
+	GRE
 	(config)interface tunnel X
 	(config-if)ip address IP MASK
 	(config-if)tunnel source [IP|INT]
@@ -708,7 +716,7 @@ cdp neighbors [detail]
 
 	(config-if)tunnel mode gre ipv6
 
-----PPPoE
+	PPPoE
 	#show pppoe session
 	#show ip interface [brief] dialerX
 	#show interface dialerX
@@ -729,35 +737,43 @@ cdp neighbors [detail]
 
 	(config)aaa new-model
 	(config)aaa authentication login default group [radius|tacas+] local none
-	(config)aaa autorization ?
 
-----Tacas+
-	(config)tacacs-server host IP key X
+	Tacas+
+	(config)aaa new-model
 
-	(config)tacas server NAME
+	(config)tacacs server NAME
 		key [X] PWD
 		address [ipv4|ipv6] IP
 
-----Radius
+	(config)tacacs-server host IP key X
+
+	Radius
 	(config)aaa new-model
+
+	(config)radius server NAME
+		key PWD
+		address [ipv4|ipv6] IP
+
 	(config)radius-server host IP key X
 	(config)aaa authentication dot1x default group radius
 	(config)do1x system-auth-control
 	(config-if)dot1x port-control
 
-	(config)radius server NAME
-		key PWD
-		address IP
+	----
+
+	(config)line vty 0 15
+		login authentication default
 
 ------------------------SPAN----------------------------------------------------
 
 	#show monitor
 
-----LOCAL
+	LOCAL
 	(config)monitor session X [source|destination] [interface INT|vlan X]
 
-----RSPAN
-	(config-vlan)remote-span
+	RSPAN
+	(config)vlan X
+		remote-span
 	(config)monitor session X [source|destination] [interface INT|vlan X]
 	(config)monitor session X source remote vlan X
 
@@ -778,10 +794,9 @@ cdp neighbors [detail]
 
 ------------------------SNMP----------------------------------------------------
 
-----v3 priv
+	v3 priv
 	(config)snmp-server group NAME v3 priv
-	(config)snmp-server user NAME NAME v3 auth [sha|md5] PWD priv \
-			[des|3des|aes] X PWD
+	(config)snmp-server user NAME NAME v3 auth [sha|md5] PWD priv [des|3des|aes] X PWD
 	(config)snmp-server host IP trap v 3 priv NAME
 
 ------------------------RPF-----------------------------------------------------
