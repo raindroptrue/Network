@@ -102,7 +102,7 @@
 
 ------------------------SECURITY------------------------------------------------
 
-	PASSWORD
+	hPASSWORD
 	(config)service password-encryption
 	(config)enable secret PWD
 	(config)enable password PWD
@@ -145,7 +145,7 @@
 	(config)username NAME [privilege X] secret PWD
 	(config)line vty 0 15
 		login local
-		transport input [ssh|telnet|all|none]
+		transport input ssh|telnet|all|none
 
 	VPN
 	#show crypto isakmp [policy|sa]
@@ -156,12 +156,12 @@
 	(config)crypto isakmp enable
 	(config)crypto isakmp policy X
 		authentication pre-share
-		encryption [des|3des|aes]
-		hash [md5|sha]
+		encryption des|3des|aes
+		hash md5|sha
 		lifetime X
-	(config)crypto isakmp key X PWD address IP
+	(config)crypto isakmp key 6 PWD address IP
 	(config)crypto ipsec transform-set NAME ah-md5-hmac
-		mode [tunnel|transport]
+		mode tunnel|transport
 	(config)crypto ipsec security-association lifetime seconds X
 
 	(config)crypto map NAME X ipsec-isakmp
@@ -346,8 +346,7 @@
 
 ------------------------ROUTING-------------------------------------------------
 
-
-	STATIC
+STATIC
 	(config)no ip route
 	(config)ip default-gateway gw_ip
 
@@ -378,7 +377,7 @@
 
 	(config-if)ipv6 dhcp relay destination _ip
 
-	RIPv2
+RIPv2
 	#show ip route [rip]
 	#show ip rip database
 	(config)ip route NET MASK IP [X]
@@ -393,14 +392,14 @@
 
 	(config-if)[no]ip split-horizon
 
-	RIPng
+RIPng
 	#show ipv6 rip
 	#show ipv6 route rip
 
 	(config-if)ipv6 rip NAME enable
 	(config-if)ipv6 rip NAME enable [default-information [only|originate]]
 
-	OSPF
+OSPF
 	#show ip route ospf
 	#show ip ospf neighbor|interface[brief|INT]
 	#show ip ospf border-routers|database|virtual-links
@@ -442,9 +441,9 @@
 	(config-router)area X authentication message-digest
 	(config-if)ip ospf message-digest-key 1 md5 PWD
 
-	OSPFv3
+OSPFv3
 	#show ipv6 ospf neighbor [detail]|interface[brief]
-	#show ipv6 ospf border-router|virtual-link
+	#show ipv6 ospf [border-router|virtual-link]
 	#show ipv6 protocols
 	#show ipv6 route [ospf]
 
@@ -455,12 +454,13 @@
 		area X stub [no-summary]
 		area X virtual-link RID
 
+		redistibute connected
+
 	(config-if)ipv6 enable
 	(config-if)ipv6 address IPv6
 	(config-if)ipv6 ospf X area X
 
-
-	EIGRP
+EIGRP
 	#show ip route eigrp|NET [MASK]
 	#show ip eigrp neighbor|topology [all-links]|interface detail [INT]|traffic
 	#show ip protocol
@@ -489,7 +489,7 @@
 	(config-if)ip authentication mode eigrp X md5
 	(config-if)ip authentication key-chain eigrp X NAME
 
-	EIGRPv6
+EIGRPv6
 	#show ipv6 eigrp neighbor|topology [all-links]|interfaces[detail]|INT
 	#show ipv6 route eigrp
 	#show ipv6 eigrp topology
@@ -497,18 +497,21 @@
 	(config)ipv6 unicast-routing
 	(config)ipv6 router eigrp X
 		router-id RID
+
 		default-metric X X X X X
 		redistribute connected
+
 	(config-if)ipv6 eigrp X
 
-	BGP
+BGP
 	#show tcp brief
 	#show ip bgp summary|IP
-	#show ip bgp neighbor [ip]
+	#show ip bgp neighbor [IP]
 
 	#clear ip bgp * soft in|out
 
 	(config)router bgp X
+		bgp router-id RID
 		neighbor IP remote-as X
 		neighbor IP ebgp-multihop X
 		neighbor IP update-source [loopbackX]
@@ -522,14 +525,24 @@
 
 		bgp default local-preference X
 
+		neighbor IP route-map NAME in|out
+
+		no synch
+
+		#show ip prefix-list
+		(config)ip prefix-list NAME d|p NET/X|0.0.0.0/0 le 32
+
+RouteMAP
+	#show route-map
+
 	(config)route-map NAME permit X
 		match ip address X
 		set metric X
 		set local-pref X
-	(config)router bgp X
-		neighbor IP route-map NAME in|out
+		set weight X
 
-	(config)ip prefix-list NAME d|p NET/X|0.0.0.0/0 le 32
+	(config)ip local policy route-map NAME
+	(config-if)ip policy route-map NAME
 
 ------------------------VRF-----------------------------------------------------
 
@@ -587,7 +600,7 @@
 	(config)no access-list X
 	(config)access-list X remark TXT
 
-	(config)ip access-list standard NAME
+	(config)ip access-list standard|extended NAME
 		[p|d]IP rMASK
 
 	(config-if)[no]ip access-group X [in|out]
@@ -805,7 +818,7 @@
 	#show cef interface INT
 	#show ip interface INT | include verification
 
-	(config-if)ip verify unicast source reachable-via [any|rx]
+	(config-if)ip verify unicast source reachable-via [any|rx] [allow-default]
 
 ------------------------SLA-----------------------------------------------------
 
