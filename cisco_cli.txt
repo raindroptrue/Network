@@ -71,18 +71,21 @@
 	(config-if)bandwidth rate-in-kbps
 		   clock rate rate-in-bps
 
+	(config)errdisable recovery cause [all|*]
+
 ------------------------DiscoveryProtocol---------------------------------------
 
 	CDP
-	#show cdp [neighbor [detail]]
+	#show cdp [neighbors [INT] [detail]]
 
 	(config)[no]cdp run
 	(config-if)[no]cdp enable
 
 	LLDP
-	#show lldp neighbor
+	#show lldp [neighbors [INT] [detail]]
 
 	(config)[no] lldp run
+	(config-if)[no] lldp receive|transmit
 
 	------
 	cdp entry NAME
@@ -102,7 +105,7 @@
 
 ------------------------SECURITY------------------------------------------------
 
-	hPASSWORD
+	PASSWORD
 	(config)service password-encryption
 	(config)enable secret PWD
 	(config)enable password PWD
@@ -111,6 +114,7 @@
 		privilege level [0-15]
 		login [local]
 		password PWD
+		access-class X in
 
 	KEY_CHAIN
 	(config)key chain NAME
@@ -121,16 +125,14 @@
 	#show port-security [interface INT|address]
 	#show errdisable recovery
 
-	(config-if)switchport mode access
-	(config-if)switchport access vlan X
+	#clear port-security all|configured|dynamic|sticky [address MAC|interface INT]
 
 	(config-if)switchport port-security
-	(config-if)switchport port-security mac-address [MAC|sticky]
+	(config-if)switchport port-security mac-address MAC|sticky
 	(config-if)switchport port-security maximum X
-	(config-if)switchport port-security aging [static|time X|type]
-	(config-if)switchport port-security violation [protect|restrict|shutdown]
+	(config-if)switchport port-security aging static|time X|type
+	(config-if)switchport port-security violation protect|restrict|shutdown
 
-	#show errdisable recovery
 	(config)errdisable recovery [cause ...|interval]
 
 	SSH
@@ -139,8 +141,8 @@
 
 	(config)hostname NAME
 	(config)ip domain-name NAME
-		crypto key generate rsa modulus 768
-		crypto key zeroize rsa
+	(config)crypto key generate rsa modulus 768
+	(config)crypto key zeroize rsa
 	(config)ip ssh version 2
 	(config)username NAME [privilege X] secret PWD
 	(config)line vty 0 15
@@ -182,7 +184,7 @@
 
 	#show vlan [brief|id X]
 	#show interfaces vlan X
-	#show [interface] switchport | [begin INT]
+	#show [interface]  switchport | [begin INT]
 
 	(config)vlan X
 		name NAME
@@ -198,7 +200,7 @@
 	#show interface INT switchport
 	#show interface [INT] trunk
 
-	(config-if)switchport mode trunk desirable?
+	(config-if)switchport mode trunk|dynamic [desirable|auto]
 	(config-if)switchport trunk encapsulation [dot1q|isl|negotiate]
 	(config-if)switchport trunk allowed vlan {add|all|except|remove] VLAN_LIST
 	(config-if)switchport trunk native vlan X
@@ -250,9 +252,7 @@
 	#show spanning-tree backbonefast
 	(config)spanning-tree backbonefast
 
-	PORTFAST
 	#show spanning-tree interface INT portfast
-
 	(config)spanning-tree portfast default
 	(config-if)spanning-tree portfast [disable]
 
@@ -563,7 +563,7 @@ RouteMAP
 	(config-if)standby X preempt [delay]
 	(config-if)standby X timers X X
 	(config-if)standby X track INT [X]
-	(config-if)standby X authentication md5 [key-string|key-chain] X
+	(config-if)standby X authentication md5 [key-string |key-chain] X
 	(config-if)standby version <1-2>
 
 	VRRP
@@ -779,7 +779,8 @@ RouteMAP
 
 ------------------------SPAN----------------------------------------------------
 
-	#show monitor
+	#show monitor [session X|all|local|range X|remote] [detail]
+	#show running config | include monitor
 
 	LOCAL
 	(config)monitor session X [source|destination] [interface INT|vlan X]
@@ -787,8 +788,12 @@ RouteMAP
 	RSPAN
 	(config)vlan X
 		remote-span
-	(config)monitor session X [source|destination] [interface INT|vlan X]
-	(config)monitor session X source remote vlan X
+
+	(config)monitor session X source [interface INT|vlan X] [rx|tx|both]
+	(config)monitor session X destination remote vlan X
+
+	(config)monitor session X source remote vlan
+	(config)monitor session X destination interface INT [encapsulation replicate]
 
 ------------------------PrivateVLAN---------------------------------------------
 
