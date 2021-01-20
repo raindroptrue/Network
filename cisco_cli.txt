@@ -326,6 +326,7 @@
 		client-identifier NAME
 
 	(config-if)ip address dhcp
+	(config-if)no ip dhcp client request router
 
 	(config-if)ip address dhcp client-id INT
 	(config-if)ip helper-address IP
