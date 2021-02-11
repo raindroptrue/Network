@@ -1,0 +1,350 @@
+#include <cstdlib>
+#include <cstdio>
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <string.h>
+#include <iomanip>
+using namespace std;
+
+const int MAKS_LB_PRODUKTOW = 20;
+fstream plikOdczyt;
+fstream plikZapis;
+
+//==============================================================================
+class Prod{
+    public:
+    Prod();
+    Prod(string nazwa,int ilosc, double cena);
+    void dodajNazwa(string nazwa);
+    void dodajIlosc(int ilosc);
+    void dodajCena(double cena);
+    string pokazNazwa();
+    int pokazIlosc();
+    double pokazCena();
+
+    private:
+    string nazwa;
+    int ilosc;
+    double cena;
+};
+Prod::Prod(): nazwa("Nieznany produkt"), ilosc(0), cena(0) {}
+Prod::Prod(string nazwa,int ilosc, double cena){
+    dodajNazwa(nazwa);
+    dodajIlosc(ilosc);
+    dodajCena(cena);
+}
+void Prod::dodajNazwa(string nazwa){
+    if(nazwa.empty())
+         Prod::nazwa = "Nieznany produkt";
+    else
+       Prod::nazwa = nazwa;
+}
+void Prod::dodajIlosc(int ilosc){
+    if(ilosc < 0)
+        Prod::ilosc = 0;
+    else
+        Prod::ilosc = ilosc;
+}
+void Prod::dodajCena(double cena){
+    if(cena < 0)
+        Prod::cena = 0;
+    else
+        Prod::cena = cena;
+}
+string Prod::pokazNazwa(){
+    return nazwa;
+}
+int Prod::pokazIlosc(){
+    return ilosc;
+}
+double Prod::pokazCena(){
+    return cena;
+}
+//--------------------------------------------------------------------
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+class ProdLista{
+    public:
+    ProdLista();
+    ~ProdLista();
+    bool dopiszProd(string nazwa, int ilosc, double cena);
+    bool dopiszProd(Prod * produkt);
+    int podajLiczbeProduktow();
+    Prod * pobierzProdukt(int nrProd);
+
+
+    private:
+    int liczbaProd;
+    Prod * produkty[MAKS_LB_PRODUKTOW];
+    bool dodajDoListy(Prod * produkt);
+};
+ProdLista::ProdLista() : liczbaProd(0){}
+ProdLista::~ProdLista(){
+        for(int i = 0 ; i < liczbaProd; ++i)
+            delete produkty[i];
+}
+bool ProdLista::dopiszProd(string nazwa, int ilosc, double cena){
+        return dodajDoListy(new Prod(nazwa, ilosc, cena));
+}
+bool ProdLista::dopiszProd(Prod * produkt){
+      return dodajDoListy(produkt);
+}
+int ProdLista::podajLiczbeProduktow(){
+      return liczbaProd;
+}
+Prod * ProdLista::pobierzProdukt(int nrProd){
+    if(nrProd < liczbaProd && nrProd >= 0)
+        return produkty[nrProd];
+    else
+        return 0;
+}
+bool ProdLista::dodajDoListy(Prod * produkt){
+    if(produkt != 0 && liczbaProd < MAKS_LB_PRODUKTOW - 1)
+        {
+            produkty[liczbaProd++] = produkt;
+            return true;
+        }
+    else
+        return false;
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+//-----------------------------------------------------------------
+class ZapisOdczyt{
+  public:
+    bool zapisz(ProdLista *lista, char nazwa[]);
+    bool odczytaj(ProdLista *lista, char nazwa[]);
+};
+bool ZapisOdczyt::zapisz(ProdLista *lista, char nazwa[]){
+      ofstream plik(nazwa, ofstream::out | std::ofstream::trunc);
+      if(!plik.is_open())
+        return false;
+      else
+      {
+        for(int i = 0; i < lista->podajLiczbeProduktow(); ++i)
+        {
+            Prod *produkt = lista->pobierzProdukt(i);
+          //plik << produkt->nazwa.c_str() << ';';
+            plik << produkt->pokazNazwa().c_str() << ';';
+            plik << produkt->pokazIlosc() << ';';
+            plik << produkt->pokazCena() << '\n';
+        }
+        plik.close();
+        return true;
+      }
+}
+bool ZapisOdczyt::odczytaj(ProdLista *lista, char nazwa[]){
+      ifstream plik(nazwa);
+      if(!plik.is_open())
+        return false;
+      else
+      {
+        char buforLinii[256];
+        plik.getline(buforLinii, 255);
+        while(plik.good())
+        {
+          char nazwa[256];
+          int ilosc;
+          double cena;
+          char * element;
+
+          element = strtok(buforLinii, ",;\t\n");
+          strcpy(nazwa, element);
+          element = strtok(0, ",;\t\n");
+          ilosc = atoi(element);
+          element = strtok(0, ",;\t\n");
+          cena = atof(element);
+          lista->dopiszProd(nazwa, ilosc, cena);
+
+          plik.getline(buforLinii, 256);
+        }
+        plik.close();
+        return true;
+      }
+    }
+
+//-------------------------------------------------------------------
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+class PokazProd{
+    public:
+    static void pokazProdukt(Prod *p){
+        cout << endl << "Nazwa: " << p->pokazNazwa();
+        cout << endl << "Ilosc: " << p->pokazIlosc();
+        cout << endl << " Cena: " << p->pokazCena();
+    }
+    static void pokazPorduktWLini(Prod *p){
+        cout << p->pokazNazwa()<< ' ';
+        cout << p->pokazIlosc() << ' ';
+        cout << p->pokazCena()  << ' ' << endl;
+    }
+    static void pokazPorduktLadnie(Prod *p){
+    cout <<  setw(18) << p->pokazNazwa();
+    cout <<  setw(10) << p->pokazIlosc();
+    cout <<  setw(10) << p->pokazCena() << endl;
+    }
+};
+//--------------------------------------------------------------------
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+class PokazLista{
+    public:
+    void pokazProd(ProdLista *lista, char naglowek[] = "");
+    void pokazTabele(ProdLista *lista, char naglowek[] = "");
+    void pokazTabeleLadnie(ProdLista *lista, char naglowek[] = "");
+};
+void PokazLista::pokazProd(ProdLista *lista, char naglowek[]){
+        if(lista->podajLiczbeProduktow()<=0)
+            return;
+        cout << endl << naglowek << endl;
+        for(int i=0; i <lista->podajLiczbeProduktow(); ++i)
+            PokazProd::pokazProdukt(lista->pobierzProdukt(i));
+}
+void PokazLista::pokazTabele(ProdLista *lista, char naglowek[]){
+        if(lista->podajLiczbeProduktow() <= 0)
+            return;
+        cout << endl << naglowek << endl;
+        cout << "Nazwa Ilosc Cena" << endl;
+        for (int i =0; i < lista->podajLiczbeProduktow(); ++i)
+            PokazProd::pokazProdukt(lista->pobierzProdukt(i));
+}
+void PokazLista::pokazTabeleLadnie(ProdLista *lista, char naglowek[]){
+ if(lista->podajLiczbeProduktow() <= 0)
+            return;
+        cout << endl << naglowek << endl;
+        cout << setw(3)<< "Nr.";
+        cout <<  setw(17) << "Nazwa";
+        cout <<  setw(10) << "Ilosc";
+        cout <<  setw(10) << "Cena" << endl;
+        for (int i =0; i < lista->podajLiczbeProduktow(); ++i){
+            cout << setw(2) << i+1;
+            PokazProd::pokazPorduktLadnie(lista->pobierzProdukt(i));
+        }
+}
+//------------------------------------------------------------------
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+class Manager{
+    public:
+    Manager();
+    ~Manager();
+    void menuPokaz();
+    void menuClean();
+    void menuConti();
+    void pokazListeProduktow();
+    void pokazLadnie();
+    void dodajProdukt();
+    void modyfikujProdukt();
+    void usunProdukt();
+    void zapiszListe();
+    void zarzadzaj();
+
+    private:
+    ProdLista lista;
+    PokazLista widok;
+    ZapisOdczyt zapisOdczyt;
+
+};
+Manager::Manager(){
+        cout << "TES 11 Zarzadzam lista produktow" << endl;
+        zapisOdczyt.odczytaj(&lista, "produkty.txt");
+      //zapisOdczyt.odczytaj(&lista, "produkty.txt");
+        cout << "TEST 12 zakonczenie odczytywania";
+}
+Manager::~Manager(){
+        cout << endl << "Nacisnij Enter by zakonczyc...";
+        cin.ignore();
+        cin.get();
+}
+void Manager::menuPokaz(){
+        cout << "\n\nManager Magazynu\nWybierz dzialanie:\n\n 1. Pokaz produkty\n 2. Pokaz Tabelke\n 3. Dodaj produkt\n 4. Usun produkt\n 5. Modifikuj produkt\n 6. Zapisz Liste";
+        cout << "\n 0. Koniec";
+        cout << endl << ">> ";
+}
+void Manager::menuClean(){
+    system ( "cls" );
+}
+void Manager::menuConti(){
+    cout << "\n\nNacisnij Enter by kontynuowac ..." << flush;
+    cin.ignore();
+    cin.get();
+    Manager::menuClean();
+}
+void Manager::pokazListeProduktow(){
+    widok.pokazTabele(&lista);
+}
+void Manager::pokazLadnie(){
+    widok.pokazTabeleLadnie(&lista);
+}
+void Manager::dodajProdukt(){
+    string name;
+    int ilosc;
+    double cena;
+
+    cout << "Podaj nazwe produktu: ";
+    cin >> name;
+    cout << "\nPodaj ilosc produktu: ";
+    cin >> ilosc;
+    cout << "\nPodaj cene produktu: ";
+    cin >> cena;
+    lista.dopiszProd(name, ilosc, cena);
+
+
+}
+void Manager::modyfikujProdukt(){}
+void Manager::usunProdukt(){}
+void Manager::zapiszListe(){
+    cout << "TEST zapisywanie listy 98 !! " << endl;
+    zapisOdczyt.zapisz(&lista, "produkty.txt");
+    cout << "TEST skonczenie zapiststwania listy 99 !! " << endl;
+
+}
+void Manager::zarzadzaj(){
+    const int KONIEC =0;
+    int idOPCJI;
+    do
+    {
+        menuPokaz();
+        cin >> idOPCJI;
+        switch(idOPCJI)
+        {
+                    case 1 :{
+                        menuClean();
+                        pokazListeProduktow();
+                        menuConti();}break;
+                    case 2 :{
+                        menuClean();
+                        pokazLadnie();
+                        menuConti();}break;
+
+                    case 3 :{
+                        menuClean();
+                        dodajProdukt();
+                        menuConti();}break;
+                    case 4 :{
+                        menuClean();
+                        modyfikujProdukt();
+                        menuConti();}break;
+                    case 5 :{
+                        menuClean();
+                        usunProdukt();
+                        menuConti();}break;
+                    case 6 :{
+                        menuClean();
+                        zapiszListe();
+                        menuConti();}break;
+        }
+    }
+    while(idOPCJI != KONIEC);
+}
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+int main(){
+
+        Manager manager;
+        manager.zarzadzaj();
+
+return 0;
+}
