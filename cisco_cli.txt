@@ -511,6 +511,8 @@ BGP
 
 	#clear ip bgp * soft in|out
 
+	#debug ip bgp
+
 	(config)router bgp X
 		bgp router-id RID
 		neighbor IP remote-as X
@@ -532,6 +534,8 @@ BGP
 
 		#show ip prefix-list
 		(config)ip prefix-list NAME d|p NET/X|0.0.0.0/0 le 32
+
+		[no]neigbor IP shutdown 
 
 RouteMAP
 	#show route-map
