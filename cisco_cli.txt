@@ -81,6 +81,7 @@
 	(config)[no]cdp run
 	(config-if)[no]cdp enable
 
+
 	LLDP
 	#show lldp [neighbors [INT] [detail]]
 
@@ -116,10 +117,12 @@
 		password PWD
 		access-class X in
 
+
 	KEY_CHAIN
 	(config)key chain NAME
 		key X
 		key-string X
+
 
 	SWITCHPORT
 	#show port-security [interface INT|address]
@@ -135,6 +138,7 @@
 
 	(config)errdisable recovery [cause ...|interval]
 
+
 	SSH
 	#show ip ssh
 	#show ssh
@@ -148,6 +152,7 @@
 	(config)line vty 0 15
 		login local
 		transport input ssh|telnet|all|none
+
 
 	VPN
 	#show crypto isakmp [policy|sa]
@@ -172,6 +177,30 @@
 		set transform-set name
 	(config-if)crypto map NAME
 
+
+	GRE/IPsec
+	(config)interface tunnelX
+		ip address IP MASK
+		tunnel source INT
+		tunnel destination IP
+
+	(config)crypto isakmp policy X
+			hash sha256
+			authentication pre-share
+			group X
+			lifetime X
+			encription aes
+	(config)crypto isakmp key PWD address IP
+
+	(config)crypto ipsec transform-set NAME esp-aes esp-md5-hmac
+		mode transport|tunnel
+
+	(config)ipsec profile NAME
+		set transform-set NAME
+
+	(config-if)tunnel mode ipsec ipv4
+		tunnel protection ipsec profile NAME
+
 ------------------------SVI-----------------------------------------------------
 
 	(config)interface vlan X
@@ -185,17 +214,20 @@
 	#show vlan [brief|id X]
 	#show interfaces vlan X
 	#show [interface]  switchport | [begin INT]
+	#show interface status
 
 	(config)vlan X
 		name NAME
 
-	Access
+
+	ACCESS
 	(config)interfaces INT
 		switchport mode access
 		switchport access vlan <1-4094>
 		switchport voice vlan X
 
-	Trunk
+
+	TRUNK
 	#show interface trunk
 	#show interface INT switchport
 	#show interface [INT] trunk
@@ -205,11 +237,13 @@
 	(config-if)switchport trunk allowed vlan {add|all|except|remove] VLAN_LIST
 	(config-if)switchport trunk native vlan X
 
+
 	DTP
 	#show dtp [interface]
 	#show [interface] switchport | [begin INT]
 
 	(config-if)switchport nonegotiate
+
 
 	VTP
 	#show vtp [status|password]
@@ -219,6 +253,7 @@
 		vtp password PWD
 		vtp pruning
 		vtp version [1|2|3]
+
 
 	ROAS
 	#show interface INT.VLANID
@@ -230,6 +265,7 @@
 ------------------------STP-----------------------------------------------------
 
 	(config-if)switchport host
+
 
 	STP
 	#show spanning-tree [root|summary]
@@ -246,7 +282,9 @@
 	(config-if)spanning-tree vlan X port-priority X
 	(config-if)spanning-tree vlan X cost X
 
+
 	xxxFAST
+	#show spanning-tree vlan X summary
 	(config)spanning-tree uplinkfast [max-update-rate]
 
 	#show spanning-tree backbonefast
@@ -256,6 +294,12 @@
 	(config)spanning-tree portfast default
 	(config-if)spanning-tree portfast [disable]
 
+
+	FILTERING
+	(config)[no]spanning-tree portfast bpdufilter default
+	(config-if)spanning-tree bpdufilter [enable|disable]
+
+
 	GUARD
 	#show spanning inconsistentports
 	(config-if)spanning-tree guard root
@@ -264,27 +308,39 @@
 	(config)[no]spanning-tree portfast bpduguard default
 	(config-if)spanning-tree bpduguard [enable|disable]
 
-	(config)[no]spanning-tree portfast bpdufilter default
-	(config-if)spanning-tree bpdufilter [enable|disable]
-
 	(config)[no]spanning-tree loopguard default
 	(config-if)spanning-tree guard [loop|none]
 
+
 	UDLD
+	#show udld INT
 	(config)udld [aggressive|enable]
 	(config-if)udld port [aggressive]
 
+
 	RSTP
-	(config)spanning-tree mode [rapid-pvst|pvst|mst]
+	(config)spanning-tree mode rapid-pvst
+
 
 	MST
-	(config-mst)show pending
+	#show spanning-tree mst configuration
+
+	(config)spanning-tree mode mst
+	(config)spanning-tree mst configuration
+		?show pending
+		name NAME
+		revision X
+		instance X vlan X
+	(config)spanning-tree mst X root|priority X
+
 
 ------------------------EtherChannel--------------------------------------------
 
 	#show interface port-channel X
 	#show etherchannel [X] [summary|port-channel|brief|detail|port]
 	#show [pagp|lacp] neighbors
+	#show lacp counters|internal|neighbor|sys-id
+
 
 	(config-if)channel-group X mode [on|auto|desirable|active|passive]
 	(config)spanning-tree etherchannel guard misconfig
@@ -292,6 +348,12 @@
 	#show etherchannel load-balance
 
 	(config)port-channel load-balance ...
+
+	(config)lacp system-priority X
+	(config)interface port-channel X
+		lacp max-bundle X
+		lacp fast-switchover
+	(config-if)lacp port-priority X
 
 ------------------------L3Switch------------------------------------------------
 
@@ -465,6 +527,7 @@ EIGRP
 	#show ip route eigrp|NET [MASK]
 	#show ip eigrp neighbor|topology [all-links]|interface detail [INT]|traffic
 	#show ip protocol
+	#show ip eigrp interface
 
 	#debug eigrp packets
 
@@ -535,7 +598,7 @@ BGP
 		#show ip prefix-list
 		(config)ip prefix-list NAME d|p NET/X|0.0.0.0/0 le 32
 
-		[no]neigbor IP shutdown 
+		[no]neigbor IP shutdown
 
 RouteMAP
 	#show route-map
@@ -556,7 +619,13 @@ RouteMAP
 
 	(config)ip vrf NAME
 		interface INT
-			ip vrf forwarding NAME
+	(config-if)ip vrf forwarding NAME
+
+
+	(config)vrf definition NAME
+		address-family ipv4
+			interface INT
+	(config-if)vrf forwarding NAME
 
 ------------------------FHRP----------------------------------------------------
 
@@ -845,6 +914,14 @@ RouteMAP
 	(config)track X ip sla X [reachability|state]
 	(config)ip route IP MASK IP track X
 
+------------------------GRE-----------------------------------------------------
+	##show ?
+
+	(config)interface tunnel X
+		ip address IP MASK
+		tunnel source INT|IP
+		tunnel destintaion IP
+		keepalive X X
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
