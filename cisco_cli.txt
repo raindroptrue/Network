@@ -29,7 +29,7 @@
 	(config)hostname NAME
 	(config)no ip domain-lookup
 	(config)line con 0
-		exec-timeout _hh _min
+		exec-timeout HH MM
 		logging synchronous
 
 	#show running-config [INT]
@@ -333,7 +333,6 @@
 		instance X vlan X
 	(config)spanning-tree mst X root|priority X
 
-
 ------------------------EtherChannel--------------------------------------------
 
 	#show interface port-channel X
@@ -467,6 +466,10 @@ OSPF
 	#show ip ospf neighbor|interface[brief|INT]
 	#show ip ospf border-routers|database|virtual-links
 
+	#show ip ospf
+	#show ip ospf database network|summary IP
+	#show ip ospf database external IP
+
 	#clear ip ospf process [y]
 
 	(config)router ospf X
@@ -478,38 +481,57 @@ OSPF
 		area X stub [no-summary]
 		area X nssa [no-summary]
 
-		area X range NET MASK
+		area X range NET MASK [not-advertise]
 		summary-address NET MASK
 
+		area X filter-list prefix NAME in|out
+
 		redistribute connected [subnets [metric-type X]]
+		redistribute static subnets route-map NAME
 		passive-interface INT|default
 
 		auto-cost reference-bandwidth X
 		maximum-paths X
+		distance X [IP rMASK]
 
-		default-information originate [always]
+		default-information originate [always] [metric type 1|2 metric X]
 
-		distribute-list X in|out X
+		distribute-list ACL in|out X
+		distribute-list ACL |prefix-list|route-map
+
+	(config-if)ip ospf X area X
+
 
 	(config)ip ospf hello X
 	(config-if)ip ospf hello X
 
-	(config-if)ip ospf X area X
-	(config-if)ip ospf priority X|cost X
+	(config-if)ip ospf priority X
+
+	(config-if)ip ospf cost X
 	(config-if)bandwidth X
 
-	(config-if)ip ospf authentication
-	(config-if)ip ospf authentication-key NAME
+	(config-if)ip ospf network BRD|NBRD|P2P|P2MP
 
+
+	AUTH
 	(config-router)area X authentication message-digest
+
+	(config-if)ip ospf authentication message-digest
 	(config-if)ip ospf message-digest-key 1 md5 PWD
+
+	(config-if)ip ospf authentication
+	(config-if)ip ospf authentication-key PWD
 
 OSPFv3
 	#show ipv6 ospf neighbor [detail]|interface[brief]
 	#show ipv6 ospf [border-router|virtual-link]
 	#show ipv6 protocols
 	#show ipv6 route [ospf]
+	#show ipv6 ospf database
+	#show ipv6 interface brief
 
+
+	?(config)router ospfv3 X
 	(config)ipv6 unicast-routing
 	(config)ipv6 router ospf X
 		router-id RID
@@ -518,6 +540,9 @@ OSPFv3
 		area X virtual-link RID
 
 		redistibute connected
+
+	(config-if)ipv6 ospf X area X
+
 
 	(config-if)ipv6 enable
 	(config-if)ipv6 address IPv6
@@ -570,7 +595,7 @@ EIGRPv6
 BGP
 	#show tcp brief
 	#show ip bgp summary|IP
-	#show ip bgp neighbor [IP]
+	#show ip bgp neighbor [IP advertised-routes]
 
 	#clear ip bgp * soft in|out
 
@@ -582,35 +607,55 @@ BGP
 		neighbor IP ebgp-multihop X
 		neighbor IP update-source [loopbackX]
 		neighbor IP next-hop-self
+
 		neighbor IP weight X
 		neighbor IP route-reflector-client
+
 		neighbor IP prefix-list NAME in|out
+		neighbor IP route-map NAME in|out
+
+		[no]neighbor IP shutdown
 
 		network NET mask MASK
 		aggregate-address NET MASK [summary-only]
 
 		bgp default local-preference X
 
-		neighbor IP route-map NAME in|out
-
 		no synch
 
-		#show ip prefix-list
-		(config)ip prefix-list NAME d|p NET/X|0.0.0.0/0 le 32
+BGPv6
+	#show bgp ipv6 unicast [summary]
+	#show ipv6 route
 
-		[no]neigbor IP shutdown
+	(config)ipv6 unicast-routing
+	(config)router bgp X
+		bgp router-id RID
+		neighbor IPv6 remote-as X
+		address-family ipv6
+			neighbor IPv6 activate
+			neighbor IPv6 next-hop-self
+			network IPv6/64
+			redistribute ospf X route-map NAME
+			aggregate-address IPv6/X [summary-only]
 
 RouteMAP
 	#show route-map
 
-	(config)route-map NAME permit X
-		match ip address X
+	(config)route-map NAME [p|d X]
+		match ip address ACL|prefix-list
 		set metric X
+		set metric-type NAME
 		set local-pref X
 		set weight X
 
 	(config)ip local policy route-map NAME
 	(config-if)ip policy route-map NAME
+
+Prefix-List
+	#show ip prefix-list
+
+	(config)ip prefix-list NAME p|d NET/X
+	(config)ip prefix-list NAME p|d 0.0.0.0/0 le 32
 
 ------------------------VRF-----------------------------------------------------
 
@@ -663,14 +708,14 @@ RouteMAP
 
 ------------------------ACL-----------------------------------------------------
 
-	ACL_STD
+	ACL_STANDARD
 	#show access-list [X|NAME]
 	#show ip access-list [X|NAME]
 	#show ip interface INT
 	#sh  int | sh ru
 
-	(config)access-list X [p|d] NET rMASK
-	(config)access-list X [p|d] host IP
+	(config)access-list X p|d NET rMASK
+	(config)access-list X p|d host IP
 	(config)no access-list X
 	(config)access-list X remark TXT
 
@@ -679,11 +724,11 @@ RouteMAP
 
 	(config-if)[no]ip access-group X [in|out]
 
-	ACL_EXT
-	(config)access-list eX [p|d] PROT NET rMASK NET rMASK [eq|gt|lt] PROT
+	ACL_EXTENDED
+	(config)access-list eX p|d PROT NET rMASK NET rMASK [eq|gt|lt] PROT
 
 	(config)ip access-list extended NAME
-		[X][p|d] PROT IP rMASK IP rMASK
+		[X] p|d IP rMASK IP rMASK
 	(config)access-list extended X
 		no X
 
@@ -699,8 +744,8 @@ RouteMAP
 	#show ipv6 access-list
 
 	(config)ipv6 access-list NAME
-		[p|d] IPv6 IPv6
-		[sequence X][p|d] PROT host IPv6 host IPv6 [eq][port]
+		p|d IPv6 IPv6
+		[X] p|d PROT host IPv6 host IPv6 [eq][port]
 	(config-if)ipv6 traffic-filter NAME [in|out]
 
 ------------------------Syslog--------------------------------------------------
@@ -740,7 +785,7 @@ RouteMAP
 ------------------------NAT-----------------------------------------------------
 
 	#show ip nat translation
-	#show ip nat stat
+	#show ip nat statistics
 	#clear ip nat translation *
 
 	(config-if)ip nat [inside|outside]
@@ -866,8 +911,11 @@ RouteMAP
 	(config)monitor session X source [interface INT|vlan X] [rx|tx|both]
 	(config)monitor session X destination remote vlan X
 
-	(config)monitor session X source remote vlan
+	(config)monitor session X source remote vlan X
 	(config)monitor session X destination interface INT [encapsulation replicate]
+
+	ERSPAN
+	(config)monitor session X type erspan-source source interface INT
 
 ------------------------PrivateVLAN---------------------------------------------
 
@@ -923,12 +971,35 @@ RouteMAP
 		tunnel destintaion IP
 		keepalive X X
 
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
+------------------------SSM-----------------------------------------------------
+	#show ip mroute
+
+	(config)ip pim ssm default
+	(config-if)ip igmp join-group IP source IP
+
+------------------------NetFlow-------------------------------------------------
+	#show ip cache flow
+	#show ip flow top-talkers
+
+	(config-if)ip flow egress|ingress
+	(config)ip flow-top-talkers
+		top X
+		sort-by bytes
+	(config)ip flow-export version X
+	(config)ip flow-export destination IP PORT
+
+	#show flow record
+
+	(config)flow record NAME
+		match ipv4 source address
 
 
 
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 
 
