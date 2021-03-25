@@ -1,0 +1,61 @@
+================================================================================
+https://support.paloaltonetworks.com
+https://docs.paloaltonetworks.com
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-release-notes.html
+https://securityadvisories.paloaltonetworks.com/
+https://live.paloaltonetworks.com/t5/Customer-Resources/
+https://live.paloaltonetworks.com/t5/Customer-Resources/Support-PAN-OS-Software-Release-Guidance/ta-p/258304
+
+https://pages.nist.gov/800-63-3/sp800-63b.html
+https://knowledgebase.paloaltonetworks.com/KCSArticleDetail?id=kA10g000000ClOFCA0
+https://apps.paloaltonetworks.com/marketplace/cortex_data_lake
+https://daveonsecurity.wordpress.com/
+https://www.paloaltonetworks.com/products/product-selection
+
+
+======
+>show system info
+>show system disk-space
+
+
+===
+>debug swm status
+>debug swm revert
+
+>request system software [check|info]
+>request system software [download|install] version X
+
+>show jobs id X
+>request restart system
+
+>show jobs all
+>show chassis-ready
+
+>show session info
+
+>show system info | match system-mode
+>request high-availability state suspend
+>request high-availability state functional
+>request high-availability sync-to-remote running-config
+
+>debug logdb show-es-upgrade-time
+>show log-collector-es-cluster health
+
+
+
+===
+>show log-collector preference-list
+>request log-collector-forwarding status
+>request logging-service-forwarding status
+
+==
+>show running nat-rule-ippool rule NAME
+
+>show dhcp client state all
+>request dhcp client [renew|release] all
+>request dhcp client management-interface renew
+
+>show user user-attributes user all
+
+>request system system-mode management-only
+>request system system-mode Panorama
