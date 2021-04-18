@@ -45,6 +45,7 @@
 
 
 	#clear mac address-table dynamic [vlan X|interface INT]
+	#show mac address-table dynamic address MAC
 	#show mac address-table dynamic [vlan X|interface INT]
 	#show mac address-table [aging-time / count] dynamic [INT/ vlan X] [secure|sttic]
 
@@ -97,6 +98,12 @@
 	#show storm-control [action|broadcast|multicast|unicast|...]
 
 	(config-if)storm-control [action|broadcast|multicast|unicast] level X X
+
+------------------------SDM-----------------------------------------------------
+	#show sdm prefer
+	#show sdm prefer ?
+
+	(config)sdm prefer NAME
 
 ------------------------PoE-----------------------------------------------------
 
@@ -211,10 +218,12 @@
 
 ------------------------VLAN----------------------------------------------------
 
-	#show vlan [brief|id X]
+	#show vlan [brief|summary]
 	#show interfaces vlan X
 	#show [interface]  switchport | [begin INT]
 	#show interface status
+
+	#show vlan internal usages
 
 	(config)vlan X
 		name NAME
@@ -228,13 +237,15 @@
 
 
 	TRUNK
-	#show interface trunk
+	#show interface [trunk|status]
 	#show interface INT switchport
 	#show interface [INT] trunk
 
-	(config-if)switchport mode trunk|dynamic [desirable|auto]
+	(config)vlan dot1q tag native
+
 	(config-if)switchport trunk encapsulation [dot1q|isl|negotiate]
-	(config-if)switchport trunk allowed vlan {add|all|except|remove] VLAN_LIST
+	(config-if)switchport mode trunk
+	(config-if)switchport trunk allowed vlan [add|all|except|remove] VLAN_LIST
 	(config-if)switchport trunk native vlan X
 
 
@@ -243,16 +254,30 @@
 	#show [interface] switchport | [begin INT]
 
 	(config-if)switchport nonegotiate
+	(config-if)switchport mode dynamic [desirable|auto]
 
 
 	VTP
 	#show vtp [status|password]
+	#show vtp [counters|interface]
 
 	(config)vtp mode [server|client|transparent|off]
 		vtp domain NAME
 		vtp password PWD
 		vtp pruning
 		vtp version [1|2|3]
+
+	VTP3
+		#vtp primary [force|mst|vlan]
+
+		(config)vtp mode [client|server] [vlan|mst]
+
+		(config-if)no vtp
+
+		(config)vtp password PWD hidden
+		(config)vtp password HASH secret
+
+
 
 
 	ROAS
@@ -268,6 +293,11 @@
 
 
 	STP
+	#show spanning-tree vlan X
+	#show spanning-tree root
+	#show spanning-tree interface X [detail]
+	#show vlan brief
+
 	#show spanning-tree [root|summary]
 	#show spanning-tree [vlan X|INT|state|detail]
 	#show spanning-tree vlan X [root|bridge]
@@ -324,6 +354,9 @@
 
 	MST
 	#show spanning-tree mst configuration
+	#show spanning-tree root
+	#show spanning-tree mst [X] [detail]
+	#show spanning-tree interface [INT] detail
 
 	(config)spanning-tree mode mst
 	(config)spanning-tree mst configuration
@@ -331,25 +364,33 @@
 		name NAME
 		revision X
 		instance X vlan X
-	(config)spanning-tree mst X root|priority X
+	(config)spanning-tree mst X root
+
+	(config-if)spanning-tree mst X [cost|priority|port-priority] X
 
 ------------------------EtherChannel--------------------------------------------
 
+	#show etherchannel summary
 	#show interface port-channel X
-	#show etherchannel [X] [summary|port-channel|brief|detail|port]
-	#show [pagp|lacp] neighbors
-	#show lacp counters|internal|neighbor|sys-id
+	#show lacp neighbor detail
+	#show lacp internal
 
+	#show etherchannel [X] [summary|port-channel|brief|detail|port]
+	#show [pagp|lacp] neighbors#show interface port-channel X
+	#show lacp counters|internal|neighbor|sys-id
 
 	(config-if)channel-group X mode [on|auto|desirable|active|passive]
 	(config)spanning-tree etherchannel guard misconfig
 
+
 	#show etherchannel load-balance
 
-	(config)port-channel load-balance ...
+	(config)port-channel load-balance ?
+	(config)channel-protocol pagp|lacp
 
 	(config)lacp system-priority X
 	(config)interface port-channel X
+		port-channel min-links X
 		lacp max-bundle X
 		lacp fast-switchover
 	(config-if)lacp port-priority X
@@ -406,7 +447,7 @@
 		domain-name zzzz
 		next-server zzz.zzz.zzz.zzz
 
-------------------------ROUTING-------------------------------------------------
+========================ROUTING=================================================
 
 STATIC
 	(config)no ip route
@@ -567,6 +608,10 @@ EIGRP
 		distance eigrp X X
 		passive-interface INT|default
 
+
+		eigrp upgrade cli NAME
+
+
 	(config)ip default-network IP MASK
 
 	(config-if)no ip split-horizon eigrp X
@@ -577,6 +622,18 @@ EIGRP
 
 	(config-if)ip authentication mode eigrp X md5
 	(config-if)ip authentication key-chain eigrp X NAME
+
+EIGRP NAMED
+	(config)router eigrp NAME
+		address-family ipv4 unicast autonomous-system X
+			network IP rMASK
+
+			af-interface default|INT
+				bfd
+				-
+			topology base
+				-
+
 
 EIGRPv6
 	#show ipv6 eigrp neighbor|topology [all-links]|interfaces[detail]|INT
@@ -656,6 +713,12 @@ Prefix-List
 
 	(config)ip prefix-list NAME p|d NET/X
 	(config)ip prefix-list NAME p|d 0.0.0.0/0 le 32
+
+------------------------BFD-----------------------------------------------------
+
+	#show bfd neighbors [detail]
+
+	(config-if)bfd interval X min_rx X mutliplier X
 
 ------------------------VRF-----------------------------------------------------
 

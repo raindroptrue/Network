@@ -1,0 +1,72 @@
+-----verify STP
+	#show spanning-tree vlan X [detail]
+	#show spanning-tree interface X [detail]
+	#show vlan brief
+	#show interface trunk
+	#show interface X pruning
+	#show interface status
+	#show interface switchport
+
+	#show access-list
+	#show vlan filter
+
+-----verify trunk
+	#show interface status
+	#show vlan [brief]
+
+	#show interface [INT] trunk
+	#show interface [INT] switchport
+	#show spanning-tree [vlan|interface]
+
+-----verify vtp
+	#show vtp status
+
+	#show interface trunk
+	#show interface [INT] pruning
+	#show interface switchport
+	#vtp pruning
+
+	(config)switchport trunkg pruning vlan
+
+-----verify etherchannel
+	#show interface poX status
+
+-----verify EIGRP
+	#show ip eigrp interfaces [detail]
+	#show ip protocols
+
+	#show ip eigrp neighbors [detail]
+	#show ip eigrp topology [all-links]
+	#show ip eigrp topology [prefix/len]
+
+------pingAll-----------
+	tclsh
+
+	foreach VAR {
+	10.0.0.1
+	20.0.0.1
+	} {ping $VAR}
+
+	tclquit
+--------------------------
+
+-----verify ospf--
+	#show ip ospf
+	#show ip ospf interface [brief]
+	#show ip ospf neigbor
+	#show ip ospf databaes [router|network|summary|..]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//end

@@ -12,6 +12,12 @@ https://apps.paloaltonetworks.com/marketplace/cortex_data_lake
 https://daveonsecurity.wordpress.com/
 https://www.paloaltonetworks.com/products/product-selection
 
+https://live.paloaltonetworks.com/t5/learning-articles/packet-flow-sequence-in-pan-os/ta-p/56081
+
+
+>>
+http://api-lab.paloaltonetworks.com/
+
 
 ======
 >show system info
@@ -32,6 +38,8 @@ https://www.paloaltonetworks.com/products/product-selection
 >show chassis-ready
 
 >show session info
+>show session all
+>show session ID
 
 >show system info | match system-mode
 >request high-availability state suspend
@@ -59,3 +67,52 @@ https://www.paloaltonetworks.com/products/product-selection
 
 >request system system-mode management-only
 >request system system-mode Panorama
+
+====
+>show session info | match "Number of allocated sessions"
+>show session info | match "Packet rate"
+>request session-discard id ID
+
+>show running tcp state | match asymmetric
+
+==
+>show running resource-monitor ingress-backlogs
+
+===
+>show url-cloud status
+
+==
+>show running application setting | match "Unknown capture"
+#set deviceconfig setting application dump-unknown [no|yes]
+#commit
+-
+#set session offload [no|yes]
+===
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<end>
