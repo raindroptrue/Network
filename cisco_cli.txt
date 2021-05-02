@@ -126,9 +126,12 @@
 
 
 	KEY_CHAIN
+	#show key chain
+
 	(config)key chain NAME
 		key X
-		key-string X
+			key-string PWD
+			send-lifetime HH:MM:SS DD MONTH YYYY HH:MM:SS DD MONTH YYYY | infinite
 
 
 	SWITCHPORT
@@ -291,10 +294,8 @@
 
 	(config-if)switchport host
 
-
 	STP
 	#show spanning-tree vlan X
-	#show spanning-tree root
 	#show spanning-tree interface X [detail]
 	#show vlan brief
 
@@ -306,12 +307,11 @@
 	(config-if)spanning-tree link-type [point-to-point|shared]
 
 	(config)spanning-tree vlan X root [primary|secondary]
-	(config)spanning-tree vlan X [hello-time X|forward-time X|max-age X]
 	(config)spanning-tree vlan X priority X
-
 	(config-if)spanning-tree vlan X port-priority X
 	(config-if)spanning-tree vlan X cost X
 
+	(config)spanning-tree vlan X [hello-time X|forward-time X|max-age X]
 
 	xxxFAST
 	#show spanning-tree vlan X summary
@@ -354,17 +354,19 @@
 
 	MST
 	#show spanning-tree mst configuration
-	#show spanning-tree root
+	#show spanning-tree [root|summary]
 	#show spanning-tree mst [X] [detail]
 	#show spanning-tree interface [INT] detail
 
-	(config)spanning-tree mode mst
 	(config)spanning-tree mst configuration
-		?show pending
+		show current
+		show pending
 		name NAME
 		revision X
 		instance X vlan X
-	(config)spanning-tree mst X root
+	(config)spanning-tree mode mst
+
+	(config)spanning-tree mst X root [primary|secondary]
 
 	(config-if)spanning-tree mst X [cost|priority|port-priority] X
 
@@ -504,7 +506,7 @@ RIPng
 
 OSPF
 	#show ip route ospf
-	#show ip ospf neighbor|interface[brief|INT]
+	#show ip ospf neighbor|interface [brief|INT] |protocols
 	#show ip ospf border-routers|database|virtual-links
 
 	#show ip ospf
@@ -592,6 +594,7 @@ OSPFv3
 EIGRP
 	#show ip route eigrp|NET [MASK]
 	#show ip eigrp neighbor|topology [all-links]|interface detail [INT]|traffic
+	#show ip eigrp topology IP MASK
 	#show ip protocol
 	#show ip eigrp interface
 
@@ -605,12 +608,16 @@ EIGRP
 		metric weights 0 1 0 1 0 0
 
 		redistribute connected|static metric X X X X X
+		distribute-list ACL in INT
+		distribute-list prefix NAME in INT
+
+
 		distance eigrp X X
+		distance X IP rMASK ACL
+
 		passive-interface INT|default
 
-
-		eigrp upgrade cli NAME
-
+		offset-list ACL in|out X INT
 
 	(config)ip default-network IP MASK
 
@@ -620,19 +627,28 @@ EIGRP
 
 	(config-if)ip summary-address eigrp X NET MASK
 
-	(config-if)ip authentication mode eigrp X md5
 	(config-if)ip authentication key-chain eigrp X NAME
+	(config-if)ip authentication mode eigrp X md5
+
 
 EIGRP NAMED
+	(config)router eigrp X
+		upgrade-cli  NAME
 	(config)router eigrp NAME
-		address-family ipv4 unicast autonomous-system X
-			network IP rMASK
+		address-family ipv4 [unicast] autonomous-system X
+			network NET [rMASK]
 
 			af-interface default|INT
 				bfd
 				-
 			topology base
-				-
+				distribute-list route-map NAME in|out INT
+			af-interface INT
+				summary address IP/X
+
+				authentication mode md5
+				authentication key-chain NAME
+				authentication mode hmac-sha-256 PWD
 
 
 EIGRPv6
@@ -714,6 +730,7 @@ Prefix-List
 	(config)ip prefix-list NAME p|d NET/X
 	(config)ip prefix-list NAME p|d 0.0.0.0/0 le 32
 
+
 ------------------------BFD-----------------------------------------------------
 
 	#show bfd neighbors [detail]
@@ -744,29 +761,35 @@ Prefix-List
 	(config-if)standby X priority X
 	(config-if)standby X preempt [delay]
 	(config-if)standby X timers X X
-	(config-if)standby X track INT [X]
-	(config-if)standby X authentication md5 [key-string |key-chain] X
+	(config-if)standby X authentication md5 [key-string|key-chain] X
 	(config-if)standby version <1-2>
+
+	(config)track X interface INT [ip|line-protocol]
+	(config-if)standby X track INT [decrement X]
 
 	VRRP
 	#show vrrp [brief]
 
-	(config)track X interface INT [ip|line-protocol]
-
 	(config-if)vrrp X ip IP
-	(config-if)vrrp X priority X
+	(config-if)vrrp X priority
+
+	(config)track X interface INT [ip|line-protocol]
 	(config-if)vrrp X track X [decrement X]
 
 	GLBP
 	#show glbp [brief]
 	#show glbp | begin Forwarder 1
 
-	(config)track X interface INT [ip|line-protocol]
-
 	(config-if)glbp X ip IP
 	(config-if)glbp X priority X
+	(config-if)glbp X preempt
+
 	(config-if)glbp X timers [X X|redirect X X]
+
+	(config)track X interface INT [ip|line-protocol]
 	(config-if)glbp X weighting track X [decrement X]
+
+	(config-if)glbp X load-balancing weighted
 	(config-if)glbp X weighting X lower X upper X
 
 ------------------------ACL-----------------------------------------------------
@@ -847,22 +870,25 @@ Prefix-List
 
 ------------------------NAT-----------------------------------------------------
 
-	#show ip nat translation
+	#show ip nat translation [verbose]
 	#show ip nat statistics
 	#clear ip nat translation *
 
 	(config-if)ip nat [inside|outside]
 
-	SNAT
+	STATIC NAT INSIDE
 	(config)ip nat inside source static IP IP
 
-	DNAT
-	(config)access-list X permit NET rMASK
+	STATIC NAT OUTSIDE
+	(config)ip nat outside source static IP IP add-route
+
+	DYNAMIC NAT
+	(config)access-list ACL permit NET rMASK
 	(config)ip nat pool NAME IP IP netmask MASK
-	(config)ip nat inside source list X pool NAME
+	(config)ip nat inside source list ACL pool NAME
 
 	PAT
-	(config)ip nat inside source list X interface INT overload
+	(config)ip nat inside source list ACL interface INT overload
 
 ------------------------IPv6----------------------------------------------------
 
@@ -996,6 +1022,9 @@ Prefix-List
 	(config)vtp mode transparent
 
 ------------------------SNMP----------------------------------------------------
+	#show snmp group
+	#show snmp user
+	#show snmp
 
 	v3 priv
 	(config)snmp-server group NAME v3 priv
@@ -1055,6 +1084,53 @@ Prefix-List
 
 	(config)flow record NAME
 		match ipv4 source address
+
+------------------------Multicast-----------------------------------------------
+
+	#show ip igmp interface
+	#show ip pim interface
+	#show ip mroute
+
+
+	(config-if)ip igmp join-group IP
+
+	(config)ip multicast-routing
+	(config)ip rp-address IP
+	(config-if)ip pim sparse-mode
+
+------------------------QoS-----------------------------------------------------
+
+	#show policy-map interface
+
+	(config)mls qos
+
+	(config)class-map NAME
+		match [ip] dscp|precedence X
+
+	(config)policy-map NAME
+		class NAME
+			set
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -54,7 +54,7 @@
 	#show ip ospf
 	#show ip ospf interface [brief]
 	#show ip ospf neigbor
-	#show ip ospf databaes [router|network|summary|..]
+	#show ip ospf database [router|network|summary|..]
 
 
 
