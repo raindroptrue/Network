@@ -1,1 +1,47 @@
 R80
+	tab | space+tab | esc esc |
+
+	lock database override | unlock database
+
+	show version [all|build|edition||kernel|product]
+	show uptime
+
+	fw [ver|stat|getifs]
+	fw unloadlocal
+
+
+	show route
+	netstat -rn
+
+	show backups|backup status
+	cd /var/log/CPbackup/backups
+
+
+	cphaprob stat
+	fw tab -t connections -s
+	clusterXL_admin up|down 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<end>
