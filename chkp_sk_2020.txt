@@ -4,8 +4,10 @@ http://supportcontent.checkpoint.com/solutions?id=sk55081       //Best Practices
 http://supportcontent.checkpoint.com/solutions?id=sk88520       //Best Practices - Identity Awareness Large Scale Deployment
 http://supportcontent.checkpoint.com/solutions?id=sk98348       //Best Practices - Security Gateway Performance
 http://supportcontent.checkpoint.com/solutions?id=sk98552       //Best Practices - SNMP
+http://supportcontent.checkpoint.com/solutions?id=sk102812		//Best Practices - Firewall Policy Management 
 http://supportcontent.checkpoint.com/solutions?id=sk103657      //Best Practices - IPS
 http://supportcontent.checkpoint.com/solutions?id=sk105119      //Best Practices - VPN Performance
+http://supportcontent.checkpoint.com/solutions?id=sk106597		//Best Practices - Rulebase Construction and Optimization
 http://supportcontent.checkpoint.com/solutions?id=sk108202      //Best Practices - HTTPS Inspection
 http://supportcontent.checkpoint.com/solutions?id=sk108902      //Best Practices - Backup on Gaia OS
 http://supportcontent.checkpoint.com/solutions?id=sk112241      //Best Practices - DDoS attacks on Check Point Security Gateway
@@ -26,11 +28,14 @@ FAQ
 http://supportcontent.checkpoint.com/solutions?id=sk65123       //HTTPS Inspection FAQ
 http://supportcontent.checkpoint.com/solutions?id=sk66761       //Identity Awareness Support for Terminal Servers - FAQ
 http://supportcontent.checkpoint.com/solutions?id=sk98028       //Jumbo Hotfix Accumulator FAQ
+http://supportcontent.checkpoint.com/solutions?id=sk106496		// Software Blades updates on VSX - FAQ
 http://supportcontent.checkpoint.com/solutions?id=sk164998      //Terminal Server Agent v2 (MUH2) - FAQ
+
 
 
 How to's
 http://supportcontent.checkpoint.com/solutions?id=sk42181       //How to increase the size of a ring buffer on SecurePlatform/Gaia for Intel NIC and Broadcom NIC
+http://supportcontent.checkpoint.com/solutions?id=sk42815		//How to create a site to site (S2S) VPN without using control connections
 http://supportcontent.checkpoint.com/solutions?id=sk43733       //How to measure CPU time consumed by IPS protection
 http://supportcontent.checkpoint.com/solutions?id=sk50840       //How to enable ClusterXL Virtual MAC (VMAC) mode
 http://supportcontent.checkpoint.com/solutions?id=sk56060       //How to perform manual fail-over between instances of Virtual System in VSX cluster in VSLS mode
@@ -47,13 +52,17 @@ http://supportcontent.checkpoint.com/solutions?id=sk112061      //How to create 
 http://supportcontent.checkpoint.com/solutions?id=sk112454      //How to configure Rate Limiting rules for DoS Mitigation (R80.20 and higher)
 http://supportcontent.checkpoint.com/solutions?id=sk112734      //How to collect System Activity Report using the "sar" command
 http://supportcontent.checkpoint.com/solutions?id=sk121447      //How to perform an automated health check of a Gaia based system
-
+http://supportcontent.checkpoint.com/solutions?id=sk133312		//How to run a 'migrate export' or 'migrate import' command that survives a closed/timed-out SSH session
+http://supportcontent.checkpoint.com/solutions?id=sk167000		//How to configure Split Tunnel for Office 365 and other SaaS Applications
+http://supportcontent.checkpoint.com/solutions?id=sk170558		//How to adjust the VPN certificate's expiration period
 
 SK
 http://supportcontent.checkpoint.com/solutions?id=sk11054       //Check Point License Guide
 
 http://supportcontent.checkpoint.com/solutions?id=sk30545       //What is Office Mode?
 http://supportcontent.checkpoint.com/solutions?id=sk30583       //What is FW Monitor?
+http://supportcontent.checkpoint.com/solutions?id=sk30974		//What is VPN Wire Mode?
+http://supportcontent.checkpoint.com/solutions?id=sk30975		//What is route-based VPN?
 http://supportcontent.checkpoint.com/solutions?id=sk31511       //Check Point Security Gateway on SecurePlatform / Gaia freezes, crashes, or reboots randomly, core dump files are not created
 http://supportcontent.checkpoint.com/solutions?id=sk32578       //SecureXL Mechanism
 http://supportcontent.checkpoint.com/solutions?id=sk34475       //ClusterXL Sync Statistics - output of 'cphaprob syncstat' command
@@ -64,9 +73,12 @@ http://supportcontent.checkpoint.com/solutions?id=sk42096       //Cluster member
 http://supportcontent.checkpoint.com/solutions?id=sk44186       //Enable generation of kernel core dump file on Check Point Security Gateway on SecurePlatform / Gaia
 
 http://supportcontent.checkpoint.com/solutions?id=sk60301       //Identity Awareness AD Query
+http://supportcontent.checkpoint.com/solutions?id=sk66245		//License checking using the 'cplic check' command
 http://supportcontent.checkpoint.com/solutions?id=sk66527       //Recommended configuration for ClusterXL
+http://supportcontent.checkpoint.com/solutions?id=sk67820		//Check Point Remote Access Solutions
 
 http://supportcontent.checkpoint.com/solutions?id=sk79240       //Hit Count debugging
+http://supportcontent.checkpoint.com/solutions?id=sk79700		//VSX supported features
 
 http://supportcontent.checkpoint.com/solutions?id=sk88160       //The Check Point Performance Sizing Utility (CPSizeMe)
 http://supportcontent.checkpoint.com/solutions?id=sk88780       //Troubleshooting "No valid SA" error
@@ -128,6 +140,16 @@ https://www.checkpoint.com/downloads/products/r80.10-security-management-archite
 GOLD
 https://community.checkpoint.com/t5/General-Topics/R80-x-Architecture-and-Performance-Tuning-Link-Collection/m-p/47883#M9336
 http://www.maxpowerfirewalls.com/
+
+ZZZ
+https://community.checkpoint.com/
+https://blog.checkpoint.com/
+https://usercenter.checkpoint.com
+https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk96246#Check%20Point%2016000%20Appliances%20series
+https://community.checkpoint.com/t5/SMB-Gateways-Spark/R80-20-15-Locally-Managed-Advanced-Settings/m-p/106211?utm_campaign=cm-customers-partners-geo-2020&utm_content=This%20Week%20in%20CheckMates%20-%2028%20December%202020&utm_medium=email&utm_source=checkpoint#M4581
+
+https://community.checkpoint.com/t5/CheckMates-Toolbox/ct-p/CheckMatesToolbox?utm_medium=email&utm_source=checkpoint&utm_content=This+Week+in+CheckMates+-+23+November+2020&utm_campaign=cm-customers-partners-geo-2020
+
 
 
 

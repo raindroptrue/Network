@@ -19,7 +19,41 @@ R80
 
 	cphaprob stat
 	fw tab -t connections -s
-	clusterXL_admin up|down 
+	clusterXL_admin up|down
+
+	fw ctl chain
+
+	cat $FWDIR/conf/fwauthd.conf
+	fw tab -s
+	fw tab -t connections -f
+
+	fwaccel stat
+	fwaccel stats -s
+	fwaccel conns [-s]
+	fwtab -t cphwd_db -s
+	fw tab -t connections -u -s
+
+	sim affinity -1 l
+
+	fw ctl multik dynamic_dispatching on
+	fw ctl multik prioq 2
+
+	fw affinity -1
+	top 1
+	cpmq s
+
+	sk111583
+
+	cpinfo -y all
+	show installer downlaod packages
+
+	cpwd_admin list
+
+
+
+
+
+
 
 
 
