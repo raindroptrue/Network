@@ -49,12 +49,27 @@ R80
 
 	cpwd_admin list
 
+	//
+	tail -f /var/log/instal*detailed.log
+	tail -f /var/log/messages
 
+	sk121447
 
+	cpstat fw
 
+	tcpdump101.com
 
+	df -h / cpview / cplic print / top / mdsstat / mdsstop_customer IP /
+	/ mdsstart_customer IP / mdsenv IP / mcd /
 
+	ccc /healthcheck
 
+	lvm_manager
+	netstat -rn
+
+	vsx stat / vsx stat -v / vsx stat -l / vsenv X /
+
+	vsx_util
 
 
 
