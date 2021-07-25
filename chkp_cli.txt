@@ -6,6 +6,29 @@ R80
 	show version [all|build|edition||kernel|product]
 	show uptime
 
+	show system disk usage
+	fw tab -s
+	fw tab -u
+	fw tab -t connections -f
+	fw ctl chain
+	cp info -y all
+	cphaprob -a if
+	fw ctl pstat
+	fwaccel stat
+	fwaccel stats -s
+	fwaccel conns -s
+	sim affinity -1
+	fw ctl multik stat
+	fw ctl affinity -l -a -v
+	fw ctl affinity -l -a
+	fw ctl affinity -s
+	mq_mng -o
+	R80.40 $FWDIR/log/rad_events
+	fw ctl fast_accel show_state
+
+
+
+
 	fw [ver|stat|getifs]
 	fw unloadlocal
 
