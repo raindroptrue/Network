@@ -1,4 +1,4 @@
-------------------------GENERAL-------------------------------------------------11
+------------------------GENERAL-------------------------------------------------
 
 	#write erase->erase startup-config ->erase nvram
 
@@ -73,6 +73,9 @@
 		   clock rate rate-in-bps
 
 	(config)errdisable recovery cause [all|*]
+
+	=
+	#show proc cpu sort
 
 ------------------------DiscoveryProtocol---------------------------------------
 
@@ -505,6 +508,8 @@ RIPng
 	(config-if)ipv6 rip NAME enable [default-information [only|originate]]
 
 OSPF
+	#show ip protocols
+	#show ip ospf
 	#show ip route ospf
 	#show ip ospf neighbor|interface [brief|INT] |protocols
 	#show ip ospf border-routers|database|virtual-links
@@ -607,31 +612,38 @@ OSPFv3 NAMED
 
 EIGRP
 	#show ip route eigrp|NET [MASK]
-	#show ip eigrp neighbor|topology [all-links]|interface detail [INT]|traffic
+	#show ip eigrp neighbor|topology [interface detail [INT]|traffic
 	#show ip eigrp topology IP MASK
+	#show ip eigrp topology all-links
 	#show ip protocol
 	#show ip eigrp interface
 
 	#debug eigrp packets
 
 	(config)router eigrp X
-		[no] auto-summary
+		no auto-summary
 		[eigrp]router-id RID
-		network NET [rMASK]
+		network NET [rMASK] //network 0.0.0.0
+		neighbor IP INT
+
 		variance X
+		maximum-paths X
 		metric weights 0 1 0 1 0 0
 
 		redistribute connected|static metric X X X X X
-		distribute-list ACL in INT
-		distribute-list prefix NAME in INT
+		eigrp stub
 
+		distribute-list ACL in|out INT
+		distribute-list prefix NAME in|put INT
+		distribute-list route-map NAME in|put INT
+		offset-list ACL in|out X INT
 
 		distance eigrp X X
 		distance X IP rMASK ACL
 
 		passive-interface INT|default
 
-		offset-list ACL in|out X INT
+		timers active-time X
 
 	(config)ip default-network IP MASK
 
@@ -641,8 +653,9 @@ EIGRP
 
 	(config-if)ip summary-address eigrp X NET MASK
 
-	(config-if)ip authentication key-chain eigrp X NAME
 	(config-if)ip authentication mode eigrp X md5
+	(config-if)ip authentication key-chain eigrp X NAME
+
 
 EIGRP NAMED
 	(config)router eigrp X
@@ -733,9 +746,8 @@ BGPv6
 
 RouteMAP
 	#show route-map
-	#show ip policy
 
-	(config)route-map NAME [p|d] X
+	(config)route-map NAME p|d X
 		match ip address ACL|prefix-list
 		set metric X
 		set metric-type NAME
@@ -745,14 +757,17 @@ RouteMAP
 
 		set interface INT
 
+PBR
+	#show ip policy
+
 	(config)ip local policy route-map NAME
 	(config-if)ip policy route-map NAME
 
 Prefix-List
 	#show ip prefix-list
 
-	(config)ip prefix-list NAME p|d NET/X
-	(config)ip prefix-list NAME p|d 0.0.0.0/0 le 32
+	(config)ip prefix-list NAME seq X p|d NET/X [ge X|le X]
+	(config)ip prefix-list NAME seq X p|d 0.0.0.0/0 le 32
 
 ------------------------BFD-----------------------------------------------------
 
@@ -760,18 +775,26 @@ Prefix-List
 
 	(config-if)bfd interval X min_rx X mutliplier X
 
+	EIGRP/OSPF
+	(config-router)bfd all-interfaces
+
+	BGP
+	(config-router)neighbor IP fall-over bfd
+
 ------------------------VRF-----------------------------------------------------
 
 	#show ip vrf NAME
 	#show ip vrf interfaces NAME
 	#show ip interface INT
 	#show ip route vrf NAME
-	#show ip protocols vrf NAME 
+	#show ip protocols vrf NAME
 
 	(config)ip vrf NAME
-		interface INT
 	(config-if)ip vrf forwarding NAME
+		ip address IP MASK
 
+	(config-router)address-family ipv4 vrf NAME [autonomous-system X]
+		network NET
 
 	(config)vrf definition NAME
 		address-family ipv4
