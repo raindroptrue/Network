@@ -512,12 +512,14 @@ OSPF
 	#show ip ospf
 	#show ip route ospf
 	#show ip ospf neighbor|interface [brief|INT] |protocols
-	#show ip ospf border-routers|database|virtual-links
+	#show ip ospf border-routers|virtual-links
 	#show ip ospf database router|network|summary|asbr-summary|external|nssa-external
 
 	#show ip ospf
 	#show ip ospf database network|summary IP
 	#show ip ospf database external IP
+
+	#debug ip ospf [hello|adj]
 
 	#clear ip ospf process [y]
 
@@ -526,7 +528,7 @@ OSPF
 		network NET rMASK area X
 		neighbor IP
 
-		area X virtual-link RID
+		area X virtual-link RID [authentication ...]
 		area X stub [no-summary]
 		area X nssa [no-summary]
 		area X nssa default-information originate
@@ -544,10 +546,11 @@ OSPF
 		distance X IP rMASK ACL
 		distance ospf intra-area X inter-area X external X
 
-		area X range NET MASK [not-advertise]
 		summary-address NET MASK [not-advertise]
 
+		area X range NET MASK [not-advertise]
 		area X filter-list prefix NAME in|out
+
 		distribute-list prefix NAME in [INT]
 		-
 		distribute-list ACL in|out X
@@ -566,12 +569,10 @@ OSPF
 	(config-if)ip ospf network BRD|NBRD|P2P|P2MP
 
 	AUTH
-	(config-router)area X authentication message-digest
+	(config-router)area X authentication [message-digest]
+	(config-if)ip ospf authentication [message-digest]
 
-	(config-if)ip ospf authentication message-digest
 	(config-if)ip ospf message-digest-key 1 md5 PWD
-
-	(config-if)ip ospf authentication
 	(config-if)ip ospf authentication-key PWD
 
 OSPFv3
@@ -655,7 +656,6 @@ EIGRP
 
 	(config-if)ip authentication mode eigrp X md5
 	(config-if)ip authentication key-chain eigrp X NAME
-
 
 EIGRP NAMED
 	(config)router eigrp X
