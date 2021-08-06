@@ -166,54 +166,6 @@
 		login local
 		transport input ssh|telnet|all|none
 
-
-	VPN
-	#show crypto isakmp [policy|sa]
-	#show crypto ipsec sa
-
-	#debug crypto ipsec
-
-	(config)crypto isakmp enable
-	(config)crypto isakmp policy X
-		authentication pre-share
-		encryption des|3des|aes
-		hash md5|sha
-		lifetime X
-	(config)crypto isakmp key 6 PWD address IP
-	(config)crypto ipsec transform-set NAME ah-md5-hmac
-		mode tunnel|transport
-	(config)crypto ipsec security-association lifetime seconds X
-
-	(config)crypto map NAME X ipsec-isakmp
-		match address X
-		set peer IP
-		set transform-set name
-	(config-if)crypto map NAME
-
-
-	GRE/IPsec
-	(config)interface tunnelX
-		ip address IP MASK
-		tunnel source INT
-		tunnel destination IP
-
-	(config)crypto isakmp policy X
-			hash sha256
-			authentication pre-share
-			group X
-			lifetime X
-			encription aes
-	(config)crypto isakmp key PWD address IP
-
-	(config)crypto ipsec transform-set NAME esp-aes esp-md5-hmac
-		mode transport|tunnel
-
-	(config)ipsec profile NAME
-		set transform-set NAME
-
-	(config-if)tunnel mode ipsec ipv4
-		tunnel protection ipsec profile NAME
-
 ------------------------SVI-----------------------------------------------------
 
 	(config)interface vlan X
@@ -693,7 +645,9 @@ EIGRPv6
 BGP
 	#show tcp brief
 	#show ip bgp summary
+	#show ip bgp neighbor IP
 	#show ip bgp neighbor [IP advertised-routes]
+	#show ip bgp neighbor | i state | neighbor
 	#show ip bgp regexp ^$
 	#show ip bgp NET/X
 
@@ -705,8 +659,14 @@ BGP
 		bgp router-id RID
 		neighbor IP remote-as X
 		neighbor IP ebgp-multihop X
+		neighbor IP disable-connected-check
+		neighbor IP transport connection-mode active|passive
+		neighbor IP ttl-security hops 1
 		neighbor IP update-source [loopbackX]
 		neighbor IP next-hop-self
+		neighbor IP allowas-in
+
+		neighbor IP fall-over [route-map NAME | bfd]
 
 		neighbor IP weight X
 		neighbor IP route-reflector-client
@@ -714,12 +674,16 @@ BGP
 		neighbor IP prefix-list NAME in|out
 		neighbor IP route-map NAME in|out
 
+		neighbor IP password PWD
+
 		[no]neighbor IP shutdown
 
 		network NET mask MASK
 		aggregate-address NET MASK [summary-only] [as-set]
 
 		bgp default local-preference X
+		bgp deterministic-med
+		bgp always-compare-med
 
 		no synch
 
@@ -727,22 +691,37 @@ BGPv6
 	#show bgp ipv6 unicast [summary|neighbor]
 	#show ipv6 route
 	#show bgp ipv6 unicast regexp ^$
-	#show bgp ipv6 unicast neighbor [advertised-routes]
+	#show bgp ipv6 unicast neighbor [IP advertised-routes]
 
 	(config)ipv6 unicast-routing
 	(config)router bgp X
 		bgp router-id RID
-		neighbor IPv6 remote-as X
+		no bgp default ipv4-unicast
+		neighbor IP remote-as X
 		address-family ipv4|ipv6
-			neighbor IPv6 activate
-			neighbor IPv6 next-hop-self
+			neighbor IP activate|route-map NAME out
+			neighbor IP next-hop-self
 			neighbor IP route-map NAME in|out
 			neighbor IP prefix-list NAME in|out
 
+			neighbor IP advertise-map AD exist-map EX
+			neighbor IP capability orf prefix-list send
+
 			network IPv6/64
+			network IP mask MASK [backdoor]
+
 			redistribute ospf X route-map NAME
 			redistribute connected
 			aggregate-address IPv6/X [summary-only]
+
+			distribute-list ACL out INT
+
+Confederations
+	router bgp AS-CONF
+		bgp confederation identifier AS
+		bgp confederation peers AS-CONF...
+		neighbor IP remote-as AS-CONF
+		neighbor IP remote-as AS
 
 RouteMAP
 	#show route-map
@@ -754,6 +733,7 @@ RouteMAP
 		set local-pref X
 		set weight X
 		set tag X
+		set as-path prepend X X X
 
 		set interface INT
 
@@ -1185,25 +1165,94 @@ Prefix-List
 	(config)control-plane
 		service-policy input|output NAME
 
+------------------------DMVPN---------------------------------------------------
+
+	#show ip nhrp [brief]
+	#show dmvpn [detail]
+	#show ip cef
+	#show adjacency tunnel X encapsulation
+
+	#debug nhrp packet
+
+	======
+	phase1
+	(config)tunnel X
+		ip address IP MASK
+		tunnel source INT
+		tunnel mode gre mutlipoint
+		ip nhrp network-id X
+		ip nhrp map multicast dynamic
+
+		ip nhrp nhs IP
+		ip nhrp map IP IP
+
+		tunnel protection ipsec profile NAME
+	======
+	phase2
 
 
 
+		encryption
+		(config)cry isa pol X
+			authentication pre-share
+		(config)cry isakmp key PWD address 0.0.0.0
+		(config)cry ipsec transform-set NAME esp-3des esp-md5-hmac
+		(config)cry ipsec profile NAME
+			set transform-set NAME
+
+------------------------VPN-----------------------------------------------------
+
+	#show crypto isakmp [policy|sa]
+	#show crypto ipsec sa
+	#show crypto mpa [interface INT]
+
+	#debug crypto ipsec
+
+	(config)crypto isakmp enable
+	(config)crypto isakmp policy X
+		authentication pre-share
+		encryption des|3des|aes
+		group X
+		hash md5|sha
+		lifetime X
+	(config)crypto isakmp key 6 PWD address IP
+
+	(config)crypto ipsec transform-set NAME ah-md5-hmac
+		mode tunnel|transport
+	(config)crypto map NAME local-address loX
+	(config)crypto map NAME X ipsec-isakmp
+		match address ACL
+		set peer IP
+		set transform-set NAME
+
+	(config-if)crypto map NAME
 
 
+	(config)crypto ipsec security-association lifetime seconds X
 
+------------------------GRE/IPSEC-----------------------------------------------
 
+	(config)interface tunnelX
+		ip address IP MASK
+		tunnel source INT
+		tunnel destination IP
 
+	(config)crypto isakmp policy X
+		hash sha256
+		authentication pre-share
+		group X
+		lifetime X
+		encription aes
+	(config)crypto isakmp key PWD address IP
 
+	(config)crypto ipsec transform-set NAME esp-aes esp-md5-hmac
+		mode transport|tunnel
 
+	(config)ipsec profile NAME
+		set transform-set NAME
 
-
-
-
-
-
-
-
-
+	(config-if)tunnel mode ipsec ipv4
+		tunnel protection ipsec profile NAME
 
 
 
