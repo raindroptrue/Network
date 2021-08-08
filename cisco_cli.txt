@@ -10,6 +10,8 @@
 	debug ip packet
 	u all
 
+	#show line
+
 	(config-if)speed
 	(config-if)duplex
 
@@ -138,6 +140,7 @@
 
 
 	SWITCHPORT
+	#show mac address-table [interface INT]
 	#show port-security [interface INT|address]
 	#show errdisable recovery
 
@@ -165,6 +168,7 @@
 	(config)line vty 0 15
 		login local
 		transport input ssh|telnet|all|none
+		access-class X in
 
 ------------------------SVI-----------------------------------------------------
 
@@ -827,28 +831,30 @@ Prefix-List
 
 ------------------------ACL-----------------------------------------------------
 
-	ACL_STANDARD
 	#show access-list [X|NAME]
 	#show ip access-list [X|NAME]
 	#show ip interface INT
-	#sh  int | sh ru
 
-	(config)access-list X p|d NET rMASK
-	(config)access-list X p|d host IP
+	(config)ip access-list log-update threshold X
+	(config)ip access-list logging interval X
+
+	ACL_STANDARD
+	(config)access-list X
+		p|d NET rMASK
+		p|d host IP
+		remark TXT
 	(config)no access-list X
-	(config)access-list X remark TXT
-
-	(config)ip access-list standard|extended NAME
-		[p|d]IP rMASK
 
 	(config-if)[no]ip access-group X [in|out]
 
-	ACL_EXTENDED
-	(config)access-list eX p|d PROT NET rMASK NET rMASK [eq|gt|lt] PROT
-
-	(config)ip access-list extended NAME
+	ACL_NAMED
+	(config)ip access-list standard|extended NAME
 		[X] p|d IP rMASK IP rMASK
-	(config)access-list extended X
+
+	ACL_EXTENDED
+	(config)access-list eX
+		p|d [PROT] NET rMASK NET rMASK [eq|gt|lt] [SVC] [log|log-input]
+		remark TXT
 		no X
 
 	VACL
@@ -1087,15 +1093,6 @@ Prefix-List
 	(config)track X ip sla X [reachability|state]
 	(config)ip route IP MASK IP track X
 
-------------------------GRE-----------------------------------------------------
-	##show ?
-
-	(config)interface tunnelX
-		ip address IP MASK
-		tunnel source INT|IP
-		tunnel destintaion IP
-		keepalive X X
-
 ------------------------SSM-----------------------------------------------------
 	#show ip mroute
 
@@ -1165,6 +1162,17 @@ Prefix-List
 	(config)control-plane
 		service-policy input|output NAME
 
+------------------------GRE-----------------------------------------------------
+
+	#show interface tunnel X
+
+	(config)interface tunnelX
+		tunnel mode gre ip|ipv6
+		ip address IP MASK
+		tunnel source INT|IP
+		tunnel destintaion IP
+		keepalive X X
+
 ------------------------DMVPN---------------------------------------------------
 
 	#show ip nhrp [brief]
@@ -1200,13 +1208,16 @@ Prefix-List
 		(config)cry ipsec profile NAME
 			set transform-set NAME
 
-------------------------VPN-----------------------------------------------------
+------------------------IPSEC-----------------------------------------------------
 
-	#show crypto isakmp [policy|sa]
+	#show crypto isakmp [policy|sa|key]
 	#show crypto ipsec sa
 	#show crypto mpa [interface INT]
 
-	#debug crypto ipsec
+	#clear crypto isakmp|sa
+
+	#debug crypto ipsec|isakmp
+	#debug crypto condition peer ipv4 IP
 
 	(config)crypto isakmp enable
 	(config)crypto isakmp policy X
@@ -1227,7 +1238,7 @@ Prefix-List
 
 	(config-if)crypto map NAME
 
-
+	---
 	(config)crypto ipsec security-association lifetime seconds X
 
 ------------------------GRE/IPSEC-----------------------------------------------
@@ -1237,22 +1248,65 @@ Prefix-List
 		tunnel source INT
 		tunnel destination IP
 
+		ip tcp adjust-mss X
+
 	(config)crypto isakmp policy X
-		hash sha256
 		authentication pre-share
+		encryption des|3des|aes
 		group X
+		hash md5|sha
 		lifetime X
-		encription aes
 	(config)crypto isakmp key PWD address IP
 
 	(config)crypto ipsec transform-set NAME esp-aes esp-md5-hmac
 		mode transport|tunnel
+	(config)crypto map NAME local-address loX
+	(config)crypto map NAME X ipsec-isakmp
+		match address ACL
+		set peer IP
+		set transform-set NAME
 
+	(config-if)crypto map NAME
+
+------------------------IPSEC_VTI-----------------------------------------------
+
+	(config)interface tunnelX
+		ip address IP MASK
+		tunnel source INT
+		tunnel destination IP
+
+	(config)crypto isakmp policy X
+		authentication pre-share
+		encryption des|3des|aes
+		group X
+		hash md5|sha
+		lifetime X
+	(config)crypto isakmp key PWD address IP
+
+	(config)crypto ipsec transform-set NAME esp-aes esp-md5-hmac
+		mode transport|tunnel
 	(config)ipsec profile NAME
 		set transform-set NAME
 
-	(config-if)tunnel mode ipsec ipv4
+	(config)interface tunnelX
+		tunnel mode ipsec ipv4
 		tunnel protection ipsec profile NAME
+
+------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
