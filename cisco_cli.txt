@@ -28,6 +28,7 @@
 	#traceroute IP
 
 	#terminal lenght X
+	
 	(config)hostname NAME
 	(config)no ip domain-lookup
 	(config)line con 0
@@ -117,6 +118,8 @@
 	(config-if)power inline [auto max X|consumption X|static X|never]
 
 ------------------------SECURITY------------------------------------------------
+
+	#show privilege
 
 	PASSWORD
 	(config)service password-encryption
@@ -402,11 +405,21 @@
 	(config-if)ip dhcp snooping [information|limit|trust|vlan]
 
 	DHCPv6
-	-
-	------------------------------------------------------
+	#show ipv6 dhcp [interface|pool]
 
-		domain-name zzzz
-		next-server zzz.zzz.zzz.zzz
+	(config)ipv6 unicast-routing
+
+	(config)ipv6 dhcp pool NAME
+		dns-server IPv6
+		domain-name NAME
+	(config-if)ipv6 dhcp server NAME
+	(config-if)ipv6 nd other-config-flag
+
+	(config)ipv6 dhcp pool NAME
+		address prefix IPv6
+		dns-server IPv6
+		domain-name NAME
+
 
 ========================ROUTING=================================================
 
@@ -467,13 +480,15 @@ OSPF
 	#show ip protocols
 	#show ip ospf
 	#show ip route ospf
-	#show ip ospf neighbor|interface [brief|INT] |protocols
+	#show ip ospf neighbor|protocols
 	#show ip ospf border-routers|virtual-links
 	#show ip ospf database router|network|summary|asbr-summary|external|nssa-external
 
 	#show ip ospf
-	#show ip ospf database network|summary IP
-	#show ip ospf database external IP
+	#show ip ospf interface [INT|brief]
+	#show ip ospf database network
+	#show ip ospf database summary IP|self-originate
+	#show ip ospf database external IP|self-originate
 
 	#debug ip ospf [hello|adj]
 
@@ -502,9 +517,9 @@ OSPF
 		distance X IP rMASK ACL
 		distance ospf intra-area X inter-area X external X
 
-		summary-address NET MASK [not-advertise]
+		summary-address NET MASK [not-advertise] //asbr
 
-		area X range NET MASK [not-advertise]
+		area X range NET MASK [cost X][not-advertise] //abr
 		area X filter-list prefix NAME in|out
 
 		distribute-list prefix NAME in [INT]
@@ -530,6 +545,24 @@ OSPF
 
 	(config-if)ip ospf message-digest-key 1 md5 PWD
 	(config-if)ip ospf authentication-key PWD
+	(config-if)ip ospf authentication key-chain NAME
+
+OSPFv3 AF
+
+	#show ip route ospfv3
+	#show ipv6 route ospf
+
+	#show ospfv3 neighbor
+	#show ospfv3 database
+
+	(config)ipv6 unicast-routing
+
+	(config)router ospfv3 X
+		address-family ipv4|ipv6
+			router-id RID
+
+	(config-if)ipv6 enable
+	(config-if)ospfv3 X ipv4|ipv6 area X
 
 OSPFv3
 	#show ipv6 ospf neighbor [detail]|interface[brief]
@@ -539,7 +572,6 @@ OSPFv3
 	#show ipv6 ospf database
 	#show ipv6 interface brief
 
-	(config)router ospfv3 X
 	(config)ipv6 unicast-routing
 	(config)ipv6 router ospf X
 		router-id RID
@@ -556,21 +588,11 @@ OSPFv3
 	(config-if)ipv6 address IPv6
 	(config-if)ipv6 ospf X area X
 
-OSPFv3 NAMED
-	#show ospfv3 neighbor
-	#show ip route ospfv3
-	#show ipv6 route ospf
-
-
-	(config)router ospfv3 X
-		address-family ipv4|ipv6
-
-	(config-if)ospfv3 X ipv4|ipv6 area X
-
 EIGRP
+	#show ip route
 	#show ip route eigrp|NET [MASK]
 	#show ip eigrp neighbor|topology [interface detail [INT]|traffic
-	#show ip eigrp topology IP MASK
+	#show ip eigrp topology IP/X
 	#show ip eigrp topology all-links
 	#show ip protocol
 	#show ip eigrp interface
@@ -587,18 +609,16 @@ EIGRP
 		maximum-paths X
 		metric weights 0 1 0 1 0 0
 
-		redistribute connected|static metric X X X X X
-		eigrp stub
+		redistribute connected|static|route-map [metric X X X X X]
+		eigrp stub [connected| ]
 
-		distribute-list ACL in|out INT
-		distribute-list prefix NAME in|put INT
-		distribute-list route-map NAME in|put INT
-		offset-list ACL in|out X INT
+		distribute-list ACL|prefix-list|route-map in|out [INT]
+		offset-list stdACL|0 in|out X INT
 
 		distance eigrp X X
 		distance X IP rMASK ACL
 
-		passive-interface INT|default
+		[no] passive-interface INT|default
 
 		timers active-time X
 
@@ -617,19 +637,26 @@ EIGRP NAMED
 	(config)router eigrp X
 		upgrade-cli  NAME
 	(config)router eigrp NAME
-		address-family ipv4 [unicast] autonomous-system X
-			network NET [rMASK]
+		address-family ipv4|ipv6 [unicast] autonomous-system X
+			network NET rMASK
+			eigrp router-id RID
+			eigrp stub [connected| ]
 
-			af-interface default|INT
-				bfd
-				-
 			topology base
 				distribute-list route-map NAME in|out INT
-			af-interface INT
+				offset-list stdACL|0 in|out X INT
+
+			af-interface INT|default
 				summary address IP/X
+				passive-interface
+				[no] shutdown
+				bfd
+
+				summary-address IP MASK
 
 				authentication mode md5
 				authentication key-chain NAME
+
 				authentication mode hmac-sha-256 PWD
 
 EIGRPv6
@@ -664,6 +691,7 @@ BGP
 		neighbor IP remote-as X
 		neighbor IP ebgp-multihop X
 		neighbor IP disable-connected-check
+
 		neighbor IP transport connection-mode active|passive
 		neighbor IP ttl-security hops 1
 		neighbor IP update-source [loopbackX]
@@ -750,8 +778,8 @@ PBR
 Prefix-List
 	#show ip prefix-list
 
-	(config)ip prefix-list NAME seq X p|d NET/X [ge X|le X]
-	(config)ip prefix-list NAME seq X p|d 0.0.0.0/0 le 32
+	(config)ip prefix-list NAME [seq X] p|d NET/X [ge X|le X]
+	(config)ip prefix-list NAME [seq X] p|d 0.0.0.0/0 le 32
 
 ------------------------BFD-----------------------------------------------------
 
@@ -838,6 +866,8 @@ Prefix-List
 	(config)ip access-list log-update threshold X
 	(config)ip access-list logging interval X
 
+	(config)ip reflexive-list timeout X
+
 	ACL_STANDARD
 	(config)access-list X
 		p|d NET rMASK
@@ -850,6 +880,8 @@ Prefix-List
 	ACL_NAMED
 	(config)ip access-list standard|extended NAME
 		[X] p|d IP rMASK IP rMASK
+		permit ip X X reflect NAME [timeout X]
+		evaluate NAME
 
 	ACL_EXTENDED
 	(config)access-list eX
@@ -1062,7 +1094,7 @@ Prefix-List
 
 ------------------------SNMP----------------------------------------------------
 	#show snmp group
-	#show snmp user
+	#show snmp user|host
 	#show snmp
 
 	v3 priv
@@ -1070,13 +1102,15 @@ Prefix-List
 	(config)snmp-server user NAME NAME v3 auth [sha|md5] PWD priv [des|3des|aes] X PWD
 	(config)snmp-server host IP trap v 3 priv NAME
 
-------------------------RPF-----------------------------------------------------
+------------------------uRPF----------------------------------------------------
 
 	#show ip [cef|traffic]
 	#show cef interface INT
 	#show ip interface INT | include verification
 
 	(config-if)ip verify unicast source reachable-via [any|rx] [allow-default]
+
+	(config-if)unicast source reachable-via [any|rx|allow-default|allow-self-ping|ACL]
 
 ------------------------SLA-----------------------------------------------------
 
@@ -1154,12 +1188,28 @@ Prefix-List
 ------------------------CoPP----------------------------------------------------
 
 	#show policy-map control-plane
+	#show control-plane features|counters
 
+	(config)class-map NAME
+		match access-group ACL
 	(config)policy-map NAME
 		class NAME
 			police X transmit exceed-action drop
 
 	(config)control-plane
+		service-policy input|output NAME
+
+------------------------CPPr----------------------------------------------------
+
+	#show control-plane host features
+
+	(config)class-map NAME
+		match access-group ACL
+	(config)policy-map NAME
+		class NAME
+			police X transmit exceed-action drop
+
+	(config)control-plane host
 		service-policy input|output NAME
 
 ------------------------GRE-----------------------------------------------------
@@ -1208,7 +1258,7 @@ Prefix-List
 		(config)cry ipsec profile NAME
 			set transform-set NAME
 
-------------------------IPSEC-----------------------------------------------------
+------------------------IPSEC---------------------------------------------------
 
 	#show crypto isakmp [policy|sa|key]
 	#show crypto ipsec sa
