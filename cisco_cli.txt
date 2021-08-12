@@ -28,7 +28,7 @@
 	#traceroute IP
 
 	#terminal lenght X
-	
+
 	(config)hostname NAME
 	(config)no ip domain-lookup
 	(config)line con 0
@@ -420,7 +420,6 @@
 		dns-server IPv6
 		domain-name NAME
 
-
 ========================ROUTING=================================================
 
 STATIC
@@ -801,21 +800,30 @@ Prefix-List
 	#show ip route vrf NAME
 	#show ip protocols vrf NAME
 
+	#routing-context vrf NAME
+
+	OLD
 	(config)ip vrf NAME
 	(config-if)ip vrf forwarding NAME
 		ip address IP MASK
 
-	(config-router)address-family ipv4 vrf NAME [autonomous-system X]
-		network NET
-
+	NEW
 	(config)vrf definition NAME
-		address-family ipv4
-		address-family ipv6
+		address-family ipv4|ipv6
 			interface INT
 		rd X:X
-	(config-if)vrf forwarding NAME
+	(config-if)vrf NAME
 		ip address IP MASK
 		ipv6 address IPv6/X
+
+	---
+	eigrp
+	(config-router)address-family ipv4 vrf NAME [autonomous-system X]
+		network NET
+	ospf
+	router ospf X vrf NAME
+		network IP MASK area X
+		capability vrf-lite
 
 ------------------------FHRP----------------------------------------------------
 
@@ -1226,43 +1234,135 @@ Prefix-List
 ------------------------DMVPN---------------------------------------------------
 
 	#show ip nhrp [brief]
+	#show ip nhrp tunnel X
+	#show ip nhrp IP
 	#show dmvpn [detail]
-	#show ip cef
+	#show ip cef [IP]
 	#show adjacency tunnel X encapsulation
+	#show adjacency tuX
 
 	#debug nhrp packet
 
-	======
-	phase1
+	=====================PHASE1
+	phase1 HUB
 	(config)tunnel X
-		ip address IP MASK
+		ip address TuIP MASK
 		tunnel source INT
 		tunnel mode gre mutlipoint
 		ip nhrp network-id X
 		ip nhrp map multicast dynamic
-
 		ip nhrp nhs IP
 		ip nhrp map IP IP
-
+	ENCRYPTION
 		tunnel protection ipsec profile NAME
-	======
-	phase2
 
+	phase1 SPOKE
+	(config)tunnel X
+		ip address TuIP MASK
+		tunnel source INT
+		tunnel destination IP
+		ip nhrp network-id X
+		ip nhrp map multicast HubIP
+		ip nhrp nhs TuHubIP
+		ip nhrp map TuHubIP HubIP
+	ENCRYPTION
+		tunnel protection ipsec profile NAME
 
+	=====================PHASE2
+	phase2 HUB
+	(config)tunnel X
+		ip address TuIP MASK
+		tunnel source INT
+		tunnel mode gre mutlipoint
+		ip nhrp network-id X
+		ip nhrp map multicast dynamic
+	ENCRYPTION
+		tunnel protection ipsec profile NAME
 
-		encryption
-		(config)cry isa pol X
+		eigrp
+		no ip next-hop-self eigrp X
+		no ip split-horizon eigrp X
+
+	phase2 SPOKE
+	(config)tunnel X
+		ip address TuIP MASK
+		tunnel source INT
+		tunnel mode gre mutlipoint
+		ip nhrp network-id X
+		ip nhrp map multicast HubIP
+		ip nhrp map TuHubIP HubIP
+		ip nhrp nhs TuHubIP
+	ENCRYPTION
+		tunnel protection ipsec profile NAME
+
+	=====================PHASE3
+	phase3 HUB
+	(config)tunnel X
+		ip address TuIP MASK
+		tunnel source INT
+		tunnel mode gre mutlipoint
+		ip nhrp network-id X
+		ip nhrp map multicast dynamic
+		ip nhrp redirect
+	ENCRYPTION
+		tunnel protection ipsec profile NAME
+
+		eigrp
+		ip next-hop-self eigrp X
+		no ip split-horizon eigrp X
+
+	phase3 SPOKE
+	(config)tunnel X
+		ip address TuIP MASK
+		tunnel source INT
+		tunnel mode gre mutlipoint
+		ip nhrp network-id X
+		ip nhrp map multicast HubIP
+		ip nhrp map TuHubIP HubIP
+		ip nhrp nhs TuHubIP
+		ip nhrp shortcut
+	ENCRYPTION
+		tunnel protection ipsec profile NAME
+
+	=====================ENCRYPTION
+		IKEv1
+		(config)cry isa policy X
 			authentication pre-share
 		(config)cry isakmp key PWD address 0.0.0.0
 		(config)cry ipsec transform-set NAME esp-3des esp-md5-hmac
+			mode transport                                      //only for p2/p3
 		(config)cry ipsec profile NAME
 			set transform-set NAME
+
+		IKEv2
+		(config)crypto ikev2 keyring NAME
+			peer any
+			address 0.0.0.0 0.0.0.0
+			pre-shared-key PWD
+		(config)crypto ikev2 profile NAME
+			match identity remote address 0.0.0.0
+			authentication remote pre-share
+			authentication local pre-share
+			keyring local NAME
+		(config)cry ipsec transform-set NAME esp-3des esp-md5-hmac
+			mode transport
+		(config)cry ipsec profile NAME
+			set transform-set NAME
+			set ikev2-profile NAME
+
+	=====================Extra
+	(config)tunnel X
+		ip mtu 1400
+		ip tcp adjust-mss 1360
+
+------------------------DMVPNv6-------------------------------------------------
 
 ------------------------IPSEC---------------------------------------------------
 
 	#show crypto isakmp [policy|sa|key]
 	#show crypto ipsec sa
 	#show crypto mpa [interface INT]
+	//#show crypto ikev2 sa
 
 	#clear crypto isakmp|sa
 
@@ -1276,9 +1376,9 @@ Prefix-List
 		group X
 		hash md5|sha
 		lifetime X
-	(config)crypto isakmp key 6 PWD address IP
+	(config)crypto isakmp key 6 PWD address IP                         //0.0.0.0
 
-	(config)crypto ipsec transform-set NAME ah-md5-hmac
+	(config)crypto ipsec transform-set NAME esp-aes 192 esp-sha512-hmac
 		mode tunnel|transport
 	(config)crypto map NAME local-address loX
 	(config)crypto map NAME X ipsec-isakmp
@@ -1341,6 +1441,12 @@ Prefix-List
 	(config)interface tunnelX
 		tunnel mode ipsec ipv4
 		tunnel protection ipsec profile NAME
+
+------------------------MPLS----------------------------------------------------
+
+
+
+
 
 ------
 
