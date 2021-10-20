@@ -1,0 +1,85 @@
+HSM
+	type:control
+	cpstat -h
+	cpstat https_inspection -f default|hsm_status|all
+
+
+GENERAL
+	#cat /var/log/ftw_install.log | egrep --color "installation succeeded|FTW: Complete"
+	#df -h
+
+ClusterXL
+	>show cluster state
+	#vsenv 0
+	#cphaprob state
+	>show cluster members interfaces all
+	#cphaprob -a if
+
+VSX
+	#vsx stat -v
+
+MDS
+	mdsenv
+	mdsconfig
+
+G
+>show version all
+>show clienv __
+>save clienv
+>show timezone
+>show snapshots
+>show sysenv
+>#cpstat os -f sensors
+>show asset
+
+>show configuration
+---
+layer_uuid_rule_uuid:*_<UID>
+--
+
+	cpstat X
+	smartlsm web
+	#cphaprob -l list
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	>>>
+
+
+
+
+	>>>end
